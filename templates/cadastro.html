@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <title>Cadastro</title>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="logo">
+          <img src="logo.png" alt="Events Logo" />
+        </div>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/entrar">Entrar</a></li>
+            <li><a href="/cadastro" class="active">Cadastrar</a></li>
+            <li><a href="/eventos">Eventos</a></li>
+            <li><a href="/contatos">Contatos</a></li>
+            <li><a href="/sobre">Sobre</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card" aria-labelledby="cadastro-title">
+        <button class="btn-voltar" type="button" id="btnVoltar" onclick="history.back()">
+          ⬅ Voltar
+        </button>
+        <h2 id="cadastro-title" style="margin: 0 0 8px 0">Criar sua conta</h2>
+
+        <form id="cadastroForm" novalidate>
+          <div>
+            <label for="nome">Nome</label>
+            <input id="nome" type="text" placeholder="Nome" required />
+            <div
+              id="nomeError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="usuario">Nome de usuário</label>
+            <input
+              id="usuario"
+              type="text"
+              placeholder="Nome de usuário"
+              required
+            />
+            <div
+              id="usuarioError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="cpf">CPF</label>
+            <input id="cpf" type="text" placeholder="000.000.000-00" required />
+            <div
+              id="cpfError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="telefone">Telefone</label>
+            <input
+              id="telefone"
+              type="tel"
+              placeholder="(00) 00000-0000"
+              required
+            />
+            <div
+              id="telefoneError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              required
+            />
+            <div
+              id="emailError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="senha">
+              Senha
+              <button type="button" class="show-pass" id="togglePassSenha">
+                Mostrar
+              </button>
+            </label>
+            <input
+              id="senha"
+              type="password"
+              placeholder="••••••••"
+              required
+              minlength="6"
+            />
+            <div
+              id="senhaError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="confirmaSenha">
+              Confirme sua senha
+              <button type="button" class="show-pass" id="togglePassConfirma">
+                Mostrar
+              </button>
+            </label>
+            <input
+              id="confirmaSenha"
+              type="password"
+              placeholder="••••••••"
+              required
+              minlength="6"
+            />
+            <div
+              id="confirmaSenhaError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+            <button class="btn-criar" type="submit">Criar conta</button>
+          
+        </form>
+
+        <footer class="footer-cadastro">
+          Ao continuar você aceita os 
+          <a href="#" class="link"> Termos de Uso</a>.
+        </footer>
+      </section>
+    </main>
+
+    <div class="footer-cada">
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-logo">...</div>
+          <div class="footer-contact">...</div>
+          <div class="footer-social">...</div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

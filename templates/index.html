@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="logo.png" alt="Events Logo"> </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/" class="active" >Home</a></li>
+                    <li><a href="/entrar">Entrar</a></li>
+                    <li><a href="/cadastro" >Cadastrar</a></li>
+                    <li><a href="/eventos">Eventos</a></li>
+                    <li><a href="/contatos">Contatos</a></li>
+                    <li><a href="/sobre">Sobre</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="upcoming-events">
+        <div class="container">
+            <div class="section-header">
+                <h1>Próximos Eventos</h1>
+                <div class="slider-nav">
+                    <div class="upcoming-button-prev">&lt;</div> <div class="upcoming-button-next">&gt;</div> </div>
+            </div>
+
+            <div class="swiper" id="upcoming-slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/arrocha-exclusive.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>The second single to be taken from Chromatica</h3>
+                            <p>Jan 01, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/arrocha-exclusive.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>Live concert in stadium</h3>
+                            <p>Feb 15, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/arrocha-exclusive.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>Nightlife music party</h3>
+                            <p>Mar 20, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/ufgd-3.webp" alt="Event">
+                        <div class="slide-content">
+                            <h3>DJ lesson full day</h3>
+                            <p>Apr 10, 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="recent-events">
+        <div class="container">
+            <div class="section-header">
+                <h2>Eventos Recentes</h2>
+                <div class="slider-nav">
+                    <div class="recent-button-prev">&lt;</div>
+                    <div class="recent-button-next">&gt;</div>
+                </div>
+            </div>
+
+            <div class="swiper" id="recent-slider">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/arrocha-exclusive.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>This is being written from the perspective</h3>
+                            <p>Jan 05, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/embrasaween.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>It is a long established fact that a reader</h3>
+                            <p>Jan 10, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/project-x.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>Many desktop publishing packages</h3>
+                            <p>Jan 15, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/semana-da-computacao.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>All the Lorem Ipsum generators</h3>
+                            <p>Jan 20, 2025</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="../static/assets/img/step-up-dance.jpg" alt="Event">
+                        <div class="slide-content">
+                            <h3>There are many variations of passages</h3>
+                            <p>Jan 25, 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="main-content container">
+        
+        <main class="all-event-section">
+            <h2>Todos os Eventos</h2>
+            <div class="event-grid">
+                
+                <div class="event-card">
+                    <img src="assets/img/ufgd.webp" alt="Event Image"> <div class="card-content">
+                        <h3>The second single to be taken from Chromatica</h3>
+                        <p>Jan 01, 2025</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <img src="assets/img/ufgd-1.webp" alt="Event Image">
+                    <div class="card-content">
+                        <h3>Live concert in stadium</h3>
+                        <p>Feb 15, 2025</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <img src="assets/img/ufgd-2.webp" alt="Event Image">
+                    <div class="card-content">
+                        <h3>Nightlife music party</h3>
+                        <p>Mar 20, 2025</p>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <img src="image4.jpg" alt="Event Image">
+                    <div class="card-content">...</div>
+                </div>
+                <div class="event-card">
+                    <img src="image5.jpg" alt="Event Image">
+                    <div class="card-content">...</div>
+                </div>
+                <div class="event-card">
+                    <img src="image6.jpg" alt="Event Image">
+                    <div class="card-content">...</div>
+                </div>
+
+            </div>
+            
+        </main>
+
+
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">...</div>
+            <div class="footer-contact">...</div>
+            <div class="footer-social">...</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
