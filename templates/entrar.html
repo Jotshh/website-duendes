@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <title>Entrar</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="logo">
+          <img src="logo.png" alt="Events Logo" />
+        </div>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/entrar" class="active">Entrar</a></li>
+            <li><a href="/cadastro">Cadastrar</a></li>
+            <li><a href="/eventos">Eventos</a></li>
+            <li><a href="/contatos">Contatos</a></li>
+            <li><a href="/sobre">Sobre</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card" aria-labelledby="cadastro-title">
+        <button
+          class="btn-voltar"
+          type="button"
+          id="btnVoltar"
+          onclick="history.back()"
+        >
+          ⬅ Voltar
+        </button>
+        <h2 id="cadastro-title" style="margin: 0 0 8px 0">
+          Fazer login na Conta
+        </h2>
+
+        <form id="entrarForm" novalidate>
+          <div>
+            <label for="usuario">Nome de usuário</label>
+            <input
+              id="usuario"
+              type="text"
+              placeholder="Nome de usuário"
+              required
+            />
+            <div
+              id="usuarioError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div>
+            <label for="senha"> Senha </label>
+            <input
+              id="senha"
+              type="password"
+              placeholder="••••••••"
+              required
+              minlength="6"
+            />
+            <div
+              id="senhaError"
+              class="error"
+              aria-live="polite"
+              style="display: none"
+            ></div>
+          </div>
+
+          <button class="btn-criar" type="submit">Entrar</button>
+        </form>
+      </section>
+    </main>
+
+    <div class="footer-cada">
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-logo">...</div>
+          <div class="footer-contact">...</div>
+          <div class="footer-social">...</div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

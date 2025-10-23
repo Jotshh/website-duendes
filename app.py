@@ -18,7 +18,7 @@ class CriarConta(FlaskForm):
     enviar = SubmitField ('Criar Conta')
 
 @app.route('/')
-def home():
+def inicio():
     return render_template("index.html")
 
 @app.route('/cadastro', methods=['GET', 'POST'])
@@ -28,6 +28,10 @@ def cadastro():
     if form.validate_on_submit():
         return redirect('/')
     return render_template("cadastro.html", form = form )
+
+@app.route('/entrar')
+def entrar():
+    return render_template("entrar.html")
 
 if __name__ == '__main__':
     app.run(debug=True, port=5152)

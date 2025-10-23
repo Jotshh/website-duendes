@@ -271,18 +271,6 @@ label {
   align-items: center;
 }
 
-.btn {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  background: linear-gradient(90deg, var(--accent), #2dd4bf);
-  color: #042022;
-  box-shadow: 0 8px 20px rgba(45, 212, 191, 0.14);
-}
-
 .btn-criar {
   display: block;
   margin-top: 10px;
@@ -291,7 +279,7 @@ label {
   align-items: center;
   padding: 12px 14px;
   border-radius: 10px;
-  border: none;
+  border: 1px solid #e91e63;
   cursor: pointer;
   font-weight: 600;
   font-size: 15px;
@@ -311,7 +299,7 @@ label {
 .btn-voltar {
   margin-bottom: 20px;
   background: white;
-  color: #e91e63;
+  
   border: 1px solid #e91e63;
   padding: 10px 16px;
   border-radius: 8px;
@@ -334,7 +322,6 @@ input[type="password"] {
   padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid rgba(209, 52, 52, 0.04);
-  background: rgba(255, 255, 255, 0.02);
   color: inherit;
   outline: none;
   font-size: 15px;
