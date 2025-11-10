@@ -1,192 +1,198 @@
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Meu Perfil - Duendes Site</title>
-        <link rel="stylesheet" href="/static/css/style.css">
-        <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
-        <style>
-            .alert-success {
-                padding: 10px;
-                margin-bottom: 15px;
-                border-radius: 5px;
-                background: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-            }
-            
-            .alert-error {
-                padding: 10px;
-                margin-bottom: 15px;
-                border-radius: 5px;
-                background: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-            }
-            
-            .alert-info {
-                padding: 10px;
-                margin-bottom: 15px;
-                border-radius: 5px;
-                background: #d1ecf1;
-                color: #0c5460;
-                border: 1px solid #bee5eb;
-            }
-            
-            .perfil-info {
-                background: #f9f9f9;
-                padding: 20px;
-                border-radius: 8px;
-                margin-bottom: 20px;
-            }
-            
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+    
+    <style>
+        .alert-success {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-info {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .perfil-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .perfil-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .perfil-item:last-child {
+            border-bottom: none;
+        }
+        
+        .perfil-item strong {
+            color: #333;
+        }
+        
+        .perfil-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn-editar, .btn-eventos {
+            padding: 12px 24px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-editar {
+            background: #e91e63;
+        }
+        
+        .btn-eventos {
+            background: #4CAF50;
+        }
+        
+        .btn-editar:hover, .btn-eventos:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        @media (max-width: 768px) {
             .perfil-item {
-                display: flex;
-                justify-content: space-between;
-                padding: 10px 0;
-                border-bottom: 1px solid #eee;
-            }
-            
-            .perfil-item:last-child {
-                border-bottom: none;
-            }
-            
-            .perfil-item strong {
-                color: #333;
+                flex-direction: column;
+                gap: 5px;
             }
             
             .perfil-actions {
-                display: flex;
-                gap: 15px;
-                margin-top: 30px;
+                flex-direction: column;
             }
-            
-            .btn-editar, .btn-eventos {
-                padding: 12px 24px;
-                color: white;
-                text-decoration: none;
-                border-radius: 8px;
-                transition: all 0.3s;
-            }
-            
-            .btn-editar {
-                background: #e91e63;
-            }
-            
-            .btn-eventos {
-                background: #4CAF50;
-            }
-            
-            .btn-editar:hover, .btn-eventos:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            }
-            
-            @media (max-width: 768px) {
-                .perfil-item {
-                    flex-direction: column;
-                    gap: 5px;
-                }
-                
-                .perfil-actions {
-                    flex-direction: column;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <div class="logo">
-                    <img src="/static/logo.png" alt="Events Logo">
-                </div>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/eventos">Eventos</a></li>
-                        <li><a href="/contatos">Contatos</a></li>
-                        <li><a href="/perfil" class="active">Meu perfil</a></li>
-                        <li><a href="/sair">Sair</a></li>
-                    </ul>
-                </nav>
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
             </div>
-        </header>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/eventos">Eventos</a></li>
+                    <li><a href="/contatos">Contatos</a></li>
+                    <li><a href="/perfil" class="active">Meu perfil</a></li>
+                    <li><a href="/sair">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-        <main class="container">
-            <section class="card">
-                
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            {% if category == 'success' %}
-                                <div class="alert-success">
-                                    {{ message }}
-                                </div>
-                            {% elif category == 'error' %}
-                                <div class="alert-error">
-                                    {{ message }}
-                                </div>
-                            {% elif category == 'info' %}
-                                <div class="alert-info">
-                                    {{ message }}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+    <main class="container">
+        <section class="card">
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'success' %}
+                            <div class="alert-success">
+                                {{ message }}
+                            </div>
+                        {% elif category == 'error' %}
+                            <div class="alert-error">
+                                {{ message }}
+                            </div>
+                        {% elif category == 'info' %}
+                            <div class="alert-info">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-                <h2 style="margin-bottom: 20px;">Meu Perfil</h2>
+            <h2 style="margin-bottom: 20px;">Meu Perfil</h2>       
+            
+            <div class="perfil-info">
+                <div class="perfil-item">
+                    <strong>Nome:</strong>
+                    <span>{{ usuario.nome if usuario.nome else 'Não informado' }}</span>
+                </div>
                 
-                <div class="perfil-info">
-                    <div class="perfil-item">
-                        <strong>Nome:</strong>
-                        <span>{{ usuario.nome }}</span>
-                    </div>
-                    
-                    <div class="perfil-item">
-                        <strong>Usuário:</strong>
-                        <span>{{ usuario.usuario }}</span>
-                    </div>
-                    
-                    <div class="perfil-item">
-                        <strong>CPF:</strong>
-                        <span>{{ usuario.cpf }}</span>
-                    </div>
-                    
-                    <div class="perfil-item">
-                        <strong>Telefone:</strong>
-                        <span>{{ usuario.telefone }}</span>
-                    </div>
-                    
-                    <div class="perfil-item">
-                        <strong>Email:</strong>
-                        <span>{{ usuario.email }}</span>
-                    </div>
-                    
-                    <div class="perfil-item">
-                        <strong>Membro desde:</strong>
-                        <span>{{ usuario.data_criacao.strftime('%d/%m/%Y') if usuario.data_criacao else 'Data não disponível' }}</span>
-                    </div>
+                <div class="perfil-item">
+                    <strong>Usuário:</strong>
+                    <span>{{ usuario.nome_usuario if usuario.nome_usuario else 'Não informado' }}</span>
+                </div>
+                
+                <div class="perfil-item">
+                    <strong>CPF:</strong>
+                    <span>{{ usuario.CPF if usuario.CPF else 'Não informado' }}</span>
                 </div>
 
-                <div class="perfil-actions">
-                    <a href="/editar-perfil" class="btn-editar">
-                        Editar Perfil
-                    </a>
-                    <a href="/meus-eventos" class="btn-eventos">
-                        Meus Eventos
-                    </a>
+                <div class="perfil-item">
+                    <strong>Tipo de Usuário:</strong>
+                    <span>{{ usuario.tipo_usuario if usuario.email else 'Não informado' }}</span>
                 </div>
-            </section>
-        </main>
-
-        <footer class="site-footer">
-            <div class="container">
-                <div class="footer-logo">...</div>
-                <div class="footer-contact">...</div>
-                <div class="footer-social">...</div>
+                
+                <div class="perfil-item">
+                    <strong>Telefone:</strong>
+                    <span>{{ usuario.telefone if usuario.telefone else 'Não informado' }}</span>
+                </div>
+                
+                <div class="perfil-item">
+                    <strong>Email:</strong>
+                    <span>{{ usuario.email if usuario.email else 'Não informado' }}</span>
+                </div>
+                
+                <div class="perfil-item">
+                    <strong>Membro desde:</strong>
+                    <span>
+                        {% if usuario.data_criacao %}
+                            {{ usuario.data_criacao.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            Data não disponível
+                        {% endif %}
+                    </span>
+                </div>
             </div>
-        </footer>
-    </body>
-    </html>
+
+            <div class="perfil-actions">
+                <a href="/editar-perfil" class="btn-editar">
+                    Editar Perfil
+                </a>
+                <a href="/meus-eventos" class="btn-eventos">
+                    Meus Eventos
+                </a>
+            </div>
+        </section>
+    </main>
+
+    
+</body>
+</html>
