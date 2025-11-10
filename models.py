@@ -1,11 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
 
 db = SQLAlchemy()
 
 class Usuario(db.Model):
-    __tablename__ = 'Usuario'
+    __tablename__ = 'Usuario' 
     
     ID = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
