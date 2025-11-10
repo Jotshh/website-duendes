@@ -1,55 +1,18 @@
-from flask import Flask, request, render_template, redirect, jsonify, flash, url_for
+from flask import Flask, request, render_template, redirect, jsonify, flash, url_for, session, g
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, InputRequired, EqualTo, Email, Length
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import session, g 
+from models import db, Usuario, Organizador
+from forms import CadastroForm, LoginForm
 import functools
 
-app = Flask(__name__) 
-app.config['SECRET_KEY'] = 'teste'
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'teste'  
 
+# Configuração do banco de dados
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/bd_duendes_site'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
-class Usuario(db.Model):
-    __tablename__ = 'usuarios'
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    usuario = db.Column(db.String(50), unique=True, nullable=False)
-    cpf = db.Column(db.String(14), unique=True, nullable=False)
-    telefone = db.Column(db.String(15), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    senha = db.Column(db.String(255), nullable=False)
-    data_criacao = db.Column(db.DateTime, server_default=db.func.now())
-    
-    def set_senha(self, senha):
-        self.senha = generate_password_hash(senha)
-    
-    def check_senha(self, senha):
-        return check_password_hash(self.senha, senha)
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'nome': self.nome,
-            'usuario': self.usuario,
-            'email': self.email
-        }
-
-class CadastroForm(FlaskForm):
-    nome = StringField('Nome', validators=[DataRequired()])
-    usuario = StringField('Usuário', validators=[DataRequired()])
-    cpf = StringField('CPF', validators=[DataRequired()])
-    telefone = StringField('Telefone', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    senha = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
-    confirma_senha = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('senha')])
-
-#DEFININDO A FUNCAO DE LOGIN NECESSARIO
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
@@ -61,11 +24,15 @@ def login_required(view):
 @app.before_request
 def load_logged_in_user():
     user_id = session.get('user_id')
+    user_type = session.get('user_type')
     
     if user_id is None:
         g.user = None
     else:
-        g.user = Usuario.query.get(user_id)
+        if user_type == 'usuario':
+            g.user = Usuario.query.get(user_id)
+        elif user_type == 'organizador':
+            g.user = Organizador.query.get(user_id)
 
 @app.route('/')
 def inicio():
@@ -77,26 +44,11 @@ def cadastro():
     
     if form.validate_on_submit():
         try:
-            # Verifica se usuário existe
-            if Usuario.query.filter_by(usuario=form.usuario.data).first():
-                flash('Nome de usuário já está em uso', 'error')
-                return render_template("cadastro.html", form=form)
             
-            # Verifica se email existe
-            if Usuario.query.filter_by(email=form.email.data).first():
-                flash('Email já está cadastrado', 'error')
-                return render_template("cadastro.html", form=form)
-            
-            # Verifica o CPF 
-            if Usuario.query.filter_by(cpf=form.cpf.data).first():
-                flash('CPF já está cadastrado', 'error')
-                return render_template("cadastro.html", form=form)
-            
-            # Cria novo usuário
             novo_usuario = Usuario(
                 nome=form.nome.data,
-                usuario=form.usuario.data,
-                cpf=form.cpf.data,
+                nome_usuario=form.usuario.data,
+                CPF=form.cpf.data,
                 telefone=form.telefone.data,
                 email=form.email.data
             )
@@ -113,47 +65,82 @@ def cadastro():
             flash('Erro ao realizar cadastro. Tente novamente.', 'error')
             print(f"Erro: {e}")
     
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f'{getattr(form, field).label.text}: {error}', 'error')
+    
     return render_template("cadastro.html", form=form)
 
 @app.route('/entrar', methods=['GET', 'POST'])
 def entrar():
-    if request.method == 'POST':
-        usuario_input = request.form.get('usuario')  
-        senha_input = request.form.get('senha')
-        
-        usuario = Usuario.query.filter_by(usuario=usuario_input).first()
-        
-        if usuario:
-            print(f"✅ Usuário encontrado: {usuario.usuario}")
-            if usuario.check_senha(senha_input):
-                session.clear()
-                session['user_id'] = usuario.id
-                print(f"🎉 Login bem-sucedido! id do usuário: {usuario.id}")
-                flash('Login realizado com sucesso!', 'success')
-                return redirect(url_for('perfil'))
-            else:
-                print("❌ Senha incorreta")
-                flash('Senha incorreta', 'error')
-        else:
-            print("❌ Usuário não encontrado")
-            flash('Usuário não encontrado', 'error')
+    form = LoginForm()
     
-    return render_template("entrar.html")
+    if form.validate_on_submit():
+        usuario_input = form.usuario.data
+        senha_input = form.senha.data
+        tipo_input = form.tipo.data
+        
+        print(f"🔐 Tentando login: {usuario_input}, tipo: {tipo_input}")  # Debug
+        
+        if tipo_input == 'usuario':
+            
+            usuario = Usuario.query.filter(
+                (Usuario.nome_usuario == usuario_input) | (Usuario.email == usuario_input)
+            ).first()
+            
+            if usuario:
+                print(f"✅ Usuário encontrado: {usuario.nome_usuario}")
+                if usuario.check_senha(senha_input):
+                    session.clear()
+                    session['user_id'] = usuario.ID
+                    session['user_type'] = 'usuario'
+                    flash('Login realizado com sucesso!', 'success')
+                    return redirect(url_for('perfil'))
+                else:
+                    print("❌ Senha incorreta")
+                    flash('Senha incorreta', 'error')
+            else:
+                print("❌ Usuário não encontrado")
+                flash('Usuário não encontrado', 'error')
+        
+        elif tipo_input == 'organizador':
+            organizador = Organizador.query.filter_by(email=usuario_input).first()
+            if organizador:
+                print(f"✅ Organizador encontrado: {organizador.nome}")
+                if organizador.check_senha(senha_input):
+                    session.clear()
+                    session['user_id'] = organizador.ID
+                    session['user_type'] = 'organizador'
+                    flash('Login como organizador realizado com sucesso!', 'success')
+                    return redirect(url_for('dashboard_organizador'))
+                else:
+                    flash('Senha incorreta', 'error')
+            else:
+                flash('Organizador não encontrado', 'error')
+    
+    return render_template("entrar.html", form=form)
 
-# Rota de logout
 @app.route('/sair')
 def sair():
     session.clear()
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('inicio'))
 
-# Rota do perfil
 @app.route('/perfil')
 @login_required
 def perfil():
-    return render_template("perfil.html", usuario=g.user)
+    
+    if session.get('user_type') != 'usuario':
+        flash('Acesso não autorizado.', 'error')
+        return redirect(url_for('inicio'))
+    
+    usuario = Usuario.query.get(session['user_id'])
+    if not usuario:
+        flash('Usuário não encontrado.', 'error')
+        return redirect(url_for('entrar'))
+    
+    return render_template("perfil.html", usuario=usuario)
 
-# Rota para editar perfil
 @app.route('/editar-perfil', methods=['GET', 'POST'])
 @login_required
 def editar_perfil():
@@ -174,8 +161,15 @@ def editar_perfil():
     
     return render_template("editar_perfil.html", usuario=g.user)
 
-with app.app_context():
-    db.create_all()
+@app.route('/dashboard-organizador')
+@login_required
+def dashboard_organizador():
+    if session.get('user_type') != 'organizador':
+        flash('Acesso não autorizado.', 'error')
+        return redirect(url_for('inicio'))
+    return "Dashboard do Organizador - Em desenvolvimento"
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True, port=5152)
