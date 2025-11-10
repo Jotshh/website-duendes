@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Meu Perfil - Duendes Site</title>
         <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
         <style>
             .alert-success {
                 padding: 10px;
@@ -114,7 +115,7 @@
 
         <main class="container">
             <section class="card">
-                <!-- Mensagens Flash -->
+                
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
