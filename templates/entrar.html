@@ -19,7 +19,6 @@
             <li><a href="/cadastro">Cadastrar</a></li>
             <li><a href="/eventos">Eventos</a></li>
             <li><a href="/contatos">Contatos</a></li>
-            <li><a href="/sobre">Sobre</a></li>
           </ul>
         </nav>
       </div>
@@ -27,44 +26,23 @@
 
     <main class="container">
       <section class="card" aria-labelledby="cadastro-title">
-        <button
-          class="btn-voltar"
-          type="button"
-          id="btnVoltar"
-          onclick="history.back()"
-        >
+        <button class="btn-voltar" type="button" id="btnVoltar" onclick="history.back()" >
           ⬅ Voltar
         </button>
         <h2 id="cadastro-title" style="margin: 0 0 8px 0">
           Fazer login na Conta
         </h2>
 
-        <form id="entrarForm" novalidate>
+        <form id="entrarForm" novalidate method="post">
           <div>
-            <label for="usuario">Nome de usuário</label>
-            <input
-              id="usuario"
-              type="text"
-              placeholder="Nome de usuário"
-              required
-            />
-            <div
-              id="usuarioError"
-              class="error"
-              aria-live="polite"
-              style="display: none"
-            ></div>
-          </div>
+    <label for="usuario">Nome de usuário</label>
+    <input id="usuario" name="usuario" type="text" placeholder="Nome de usuário" required />
+    <div id="usuarioError" class="error" aria-live="polite" style="display: none"></div>
+</div>
 
           <div>
             <label for="senha"> Senha </label>
-            <input
-              id="senha"
-              type="password"
-              placeholder="••••••••"
-              required
-              minlength="6"
-            />
+            <input id="senha" name="senha"type="password" placeholder="••••••••" required minlength="6"/>
             <div
               id="senhaError"
               class="error"
@@ -72,8 +50,9 @@
               style="display: none"
             ></div>
           </div>
+          
+          <div style="margin-top: 10px;"><button class="btn-criar" type="submit">Entrar</button></div>
 
-          <button class="btn-criar" type="submit">Entrar</button>
         </form>
       </section>
     </main>

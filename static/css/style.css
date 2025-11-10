@@ -248,7 +248,7 @@ h2 {
 }
 
 #nome, 
-#nome_usuario, 
+#usuario, 
 #cpf,
 #telefone, 
 #email,
@@ -351,4 +351,49 @@ input[type="password"] {
     justify-content: center; 
     align-items: center; 
     margin-top: 10px;
+}
+
+
+.perfil-info {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.perfil-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.perfil-item:last-child {
+    border-bottom: none;
+}
+
+.perfil-item strong {
+    color: #333;
+}
+
+.perfil-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-editar:hover, .btn-eventos:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+    .perfil-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .perfil-actions {
+        flex-direction: column;
+    }
 }
