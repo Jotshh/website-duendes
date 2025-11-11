@@ -1,5 +1,7 @@
 from app import app, db, Usuario, Organizador
-from app import app, db, Organizador
+from models import Organizador, Evento
+from datetime import datetime, timedelta
+
 
 with app.app_context():
     try:
@@ -54,3 +56,64 @@ with app.app_context():
         
     except Exception as e:
         print(f"❌ Erro ao criar organizador de teste: {e}")
+
+with app.app_context():
+    try:
+        # Verificar se existe um organizador
+        organizador = Organizador.query.first()
+        if not organizador:
+            print("❌ Nenhum organizador encontrado. Crie um organizador primeiro.")
+        else:
+            # Verificar se já existem eventos
+            if Evento.query.count() == 0:
+                # Criar eventos de teste
+                eventos_teste = [
+                    {
+                        'titulo': 'Festa de Halloween',
+                        'descricao': 'Venha com sua fantasia mais assustadora!',
+                        'local': 'Clube Central',
+                        'data': datetime.now().date() + timedelta(days=10),
+                        'horario': datetime.strptime('20:00', '%H:%M').time(),
+                        'categoria': 'festas',
+                        'imagem_url': '/static/assets/img/embrasaween.jpg'
+                    },
+                    {
+                        'titulo': 'Workshop de Programação Python',
+                        'descricao': 'Aprenda Python do zero ao avançado',
+                        'local': 'UFGD - Laboratório 5',
+                        'data': datetime.now().date() + timedelta(days=5),
+                        'horario': datetime.strptime('14:00', '%H:%M').time(),
+                        'categoria': 'tecnologia',
+                        'imagem_url': '/static/assets/img/ufgd.webp'
+                    },
+                    {
+                        'titulo': 'Show de Rock Nacional',
+                        'descricao': 'As melhores bandas de rock da região',
+                        'local': 'Arena Music',
+                        'data': datetime.now().date() + timedelta(days=15),
+                        'horario': datetime.strptime('19:00', '%H:%M').time(),
+                        'categoria': 'shows',
+                        'imagem_url': '/static/assets/img/project-x.jpg'
+                    }
+                ]
+                
+                for evento_data in eventos_teste:
+                    evento = Evento(
+                        titulo=evento_data['titulo'],
+                        descricao=evento_data['descricao'],
+                        local=evento_data['local'],
+                        data=evento_data['data'],
+                        horario=evento_data['horario'],
+                        categoria=evento_data['categoria'],
+                        Organizador_ID=organizador.ID,
+                        imagem_url=evento_data['imagem_url']
+                    )
+                    db.session.add(evento)
+                
+                db.session.commit()
+                print("✅ Eventos de teste criados com sucesso!")
+            else:
+                print("✅ Eventos já existem no banco")
+                
+    except Exception as e:
+        print(f"❌ Erro ao criar eventos: {e}")
