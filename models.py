@@ -95,4 +95,26 @@ class Atividades(db.Model):
     Evento_ID = db.Column(db.Integer, db.ForeignKey('Evento.ID'), nullable=False)
     data_criacao = db.Column(db.TIMESTAMP, server_default=db.func.now())
     
-    evento = db.relationship('Evento', backref='atividades')       
+    evento = db.relationship('Evento', backref='atividades') 
+
+#CRIAR CLASSE INSCRICAO
+class Inscricao(db.Model):
+    __tablename__ = 'Inscricao_Evento'
+    
+    ID = db.Column(db.Integer, primary_key=True)
+    Usuario_ID = db.Column(db.Integer, db.ForeignKey('Usuario.ID'), nullable=False)
+    Evento_ID = db.Column(db.Integer, db.ForeignKey('Evento.ID'), nullable=False)
+    data_inscricao = db.Column(db.TIMESTAMP, server_default=db.func.now())
+    status = db.Column(db.String(20), nullable=False, default='confirmada')
+    
+    usuario = db.relationship('Usuario', backref='inscricoes')
+    evento = db.relationship('Evento', backref='inscricoes')
+    
+    def to_dict(self):
+        return {
+            'id': self.ID,
+            'usuario_id': self.Usuario_ID,
+            'evento_id': self.Evento_ID,
+            'data_inscricao': self.data_inscricao,
+            'status': self.status
+        }      
