@@ -425,6 +425,45 @@ def minhas_inscricoes():
     
     return render_template("minhas_inscricoes.html", inscricoes=inscricoes)
 
+#CRIA ROTA DA API PARA BUSCAR EVENTOS
+
+@app.route('/api/eventos')
+def api_eventos():
+    
+    try:
+        # Buscar eventos futuros, ordenados por data
+        eventos = Evento.query.filter(
+            Evento.data >= datetime.now().date()
+        ).order_by(Evento.data.asc()).limit(12).all()
+        
+        eventos_data = []
+        for evento in eventos:
+            eventos_data.append({
+                'id': evento.ID,
+                'titulo': evento.titulo,
+                'descricao': evento.descricao,
+                'local': evento.local,
+                'data': evento.data.strftime('%d/%m/%Y'),
+                'horario': evento.horario.strftime('%H:%M'),
+                'categoria': evento.categoria,
+                'imagem_url': evento.imagem_url or '/static/assets/img/default-event.jpg',
+                'organizador': evento.organizador.nome if evento.organizador else 'Organizador'
+            })
+        
+        return jsonify({
+            'success': True,
+            'eventos': eventos_data,
+            'total': len(eventos_data)
+        })
+        
+    except Exception as e:
+        print(f"Erro ao buscar eventos: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Erro ao carregar eventos',
+            'eventos': []
+        }), 500
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
