@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, jsonify, flash, url_for, session, g
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Usuario, Organizador, Evento 
+from models import db, Usuario, Organizador, Evento, Inscricao
 from forms import CadastroForm, LoginForm, EventoForm 
 import functools
 from datetime import datetime
@@ -333,6 +333,97 @@ def dashboard_organizador():
                          total_eventos=total_eventos,
                          eventos_futuros=eventos_futuros,
                          proximos_eventos=proximos_eventos)
+
+#CRIAÇÃO DAS ROTAS DE INSCRIÇÃO EM EVENTOS
+
+@app.route('/evento/<int:evento_id>')
+def detalhes_evento(evento_id):
+    evento = Evento.query.get_or_404(evento_id)
+    ja_inscrito = False
+    
+    if g.user and session.get('user_type') == 'usuario':
+        inscricao = Inscricao.query.filter_by(
+            Usuario_ID=session['user_id'], 
+            Evento_ID=evento_id
+        ).first()
+        ja_inscrito = inscricao is not None
+    
+    return render_template("detalhes_evento.html", 
+                         evento=evento, 
+                         ja_inscrito=ja_inscrito)
+
+@app.route('/inscrever/<int:evento_id>', methods=['POST'])
+@login_required
+def inscrever_evento(evento_id):
+    if session.get('user_type') != 'usuario':
+        flash('Apenas usuários podem se inscrever em eventos.', 'error')
+        return redirect(url_for('detalhes_evento', evento_id=evento_id))
+    
+    evento = Evento.query.get_or_404(evento_id)
+    
+    # Verificar se já está inscrito
+    inscricao_existente = Inscricao.query.filter_by(
+        Usuario_ID=session['user_id'],
+        Evento_ID=evento_id
+    ).first()
+    
+    if inscricao_existente:
+        flash('Você já está inscrito neste evento.', 'warning')
+        return redirect(url_for('detalhes_evento', evento_id=evento_id))
+    
+    try:
+        nova_inscricao = Inscricao(
+            Usuario_ID=session['user_id'],
+            Evento_ID=evento_id
+        )
+        
+        db.session.add(nova_inscricao)
+        db.session.commit()
+        
+        flash(f'Inscrição no evento "{evento.titulo}" realizada com sucesso!', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao realizar inscrição. Tente novamente.', 'error')
+        print(f"Erro: {e}")
+    
+    return redirect(url_for('detalhes_evento', evento_id=evento_id))
+
+@app.route('/cancelar-inscricao/<int:evento_id>', methods=['POST'])
+@login_required
+def cancelar_inscricao(evento_id):
+    if session.get('user_type') != 'usuario':
+        flash('Apenas usuários podem cancelar inscrições.', 'error')
+        return redirect(url_for('detalhes_evento', evento_id=evento_id))
+    
+    inscricao = Inscricao.query.filter_by(
+        Usuario_ID=session['user_id'],
+        Evento_ID=evento_id
+    ).first_or_404()
+    
+    try:
+        db.session.delete(inscricao)
+        db.session.commit()
+        flash('Inscrição cancelada com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao cancelar inscrição.', 'error')
+        print(f"Erro: {e}")
+    
+    return redirect(url_for('detalhes_evento', evento_id=evento_id))
+
+@app.route('/minhas-inscricoes')
+@login_required
+def minhas_inscricoes():
+    if session.get('user_type') != 'usuario':
+        flash('Apenas usuários podem ver suas inscrições.', 'error')
+        return redirect(url_for('inicio'))
+    
+    inscricoes = Inscricao.query.filter_by(
+        Usuario_ID=session['user_id']
+    ).order_by(Inscricao.data_inscricao.desc()).all()
+    
+    return render_template("minhas_inscricoes.html", inscricoes=inscricoes)
 
 if __name__ == '__main__':
     with app.app_context():
