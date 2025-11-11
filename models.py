@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 db = SQLAlchemy()
-
 class Usuario(db.Model):
     __tablename__ = 'Usuario' 
     
@@ -49,3 +49,50 @@ class Organizador(db.Model):
     
     def check_senha(self, senha):
         return check_password_hash(self.senha, senha)
+
+
+class Evento(db.Model):
+    __tablename__ = 'Evento'
+    
+    ID = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    descricao = db.Column(db.Text, nullable=False)
+    local = db.Column(db.String(100), nullable=False)
+    data = db.Column(db.Date, nullable=False)
+    horario = db.Column(db.Time, nullable=False)
+    categoria = db.Column(db.String(45), nullable=False)
+    Organizador_ID = db.Column(db.Integer, db.ForeignKey('Organizador.ID'), nullable=False)
+    imagem_url = db.Column(db.String(255))
+    data_criacao = db.Column(db.TIMESTAMP, server_default=db.func.now())
+
+    organizador = db.relationship('Organizador', backref='eventos')
+    
+    def to_dict(self):
+        return {
+            'id': self.ID,
+            'titulo': self.titulo,
+            'descricao': self.descricao,
+            'local': self.local,
+            'data': self.data.isoformat() if self.data else None,
+            'horario': self.horario.strftime('%H:%M') if self.horario else None,
+            'categoria': self.categoria,
+            'organizador_id': self.Organizador_ID,
+            'organizador_nome': self.organizador.nome if self.organizador else '',
+            'imagem_url': self.imagem_url,
+            'data_criacao': self.data_criacao
+        }
+
+class Atividades(db.Model):
+    __tablename__ = 'Atividades'
+    
+    ID = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    descricao = db.Column(db.Text, nullable=False)
+    data = db.Column(db.Date, nullable=False)
+    horario_inicio = db.Column(db.Time, nullable=False)
+    horario_fim = db.Column(db.Time, nullable=False)
+    convidado = db.Column(db.String(100), nullable=False)
+    Evento_ID = db.Column(db.Integer, db.ForeignKey('Evento.ID'), nullable=False)
+    data_criacao = db.Column(db.TIMESTAMP, server_default=db.func.now())
+    
+    evento = db.relationship('Evento', backref='atividades')       

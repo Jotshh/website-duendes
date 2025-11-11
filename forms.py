@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateField, TimeField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
+from datetime import datetime
 from models import Usuario, Organizador
+import re
 
 class CadastroForm(FlaskForm):
     nome = StringField('Nome', validators=[DataRequired()])
@@ -36,3 +38,28 @@ class LoginForm(FlaskForm):
                       choices=[('usuario', 'Usuário'), ('organizador', 'Organizador')],
                       validators=[DataRequired()])
     submit = SubmitField('Entrar')
+
+class EventoForm(FlaskForm):
+    titulo = StringField('Título do Evento', validators=[DataRequired(), Length(max=100)])
+    descricao = TextAreaField('Descrição', validators=[DataRequired()])
+    local = StringField('Local', validators=[DataRequired(), Length(max=100)])
+    data = DateField('Data do Evento', validators=[DataRequired()], format='%Y-%m-%d')
+    horario = TimeField('Horário', validators=[DataRequired()], format='%H:%M')
+    categoria = SelectField('Categoria', 
+                          choices=[
+                              ('festas', 'Festas'),
+                              ('shows', 'Shows'),
+                              ('esportes', 'Esportes'),
+                              ('tecnologia', 'Tecnologia'),
+                              ('academico', 'Acadêmico'),
+                              ('cultural', 'Cultural'),
+                              ('workshop', 'Workshop'),
+                              ('outros', 'Outros')
+                          ],
+                          validators=[DataRequired()])
+    imagem_url = StringField('URL da Imagem (opcional)')
+    submit = SubmitField('Criar Evento')
+    
+    def validate_data(self, field):
+        if field.data < datetime.now().date():
+            raise ValidationError('A data do evento não pode ser no passado.') 

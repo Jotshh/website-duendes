@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template, redirect, jsonify, flash, url_for, session, g
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Usuario, Organizador
-from forms import CadastroForm, LoginForm
+from models import db, Usuario, Organizador, Evento 
+from forms import CadastroForm, LoginForm, EventoForm 
 import functools
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'teste'  
@@ -161,13 +162,177 @@ def editar_perfil():
     
     return render_template("editar_perfil.html", usuario=g.user)
 
+@app.route('/criar-evento', methods=['GET', 'POST'])
+@login_required
+def criar_evento():
+    # Verificar se o usuário é um organizador
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem criar eventos.', 'error')
+        return redirect(url_for('inicio'))
+    
+    form = EventoForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Criar novo evento
+            novo_evento = Evento(
+                titulo=form.titulo.data,
+                descricao=form.descricao.data,
+                local=form.local.data,
+                data=form.data.data,
+                horario=form.horario.data,
+                categoria=form.categoria.data,
+                Organizador_ID=session['user_id'],
+                imagem_url=form.imagem_url.data or None
+            )
+            
+            db.session.add(novo_evento)
+            db.session.commit()
+            
+            flash('Evento criado com sucesso!', 'success')
+            return redirect(url_for('meus_eventos'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Erro ao criar evento. Tente novamente.', 'error')
+            print(f"Erro: {e}")
+    
+    # Mostrar erros de validação
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f'{getattr(form, field).label.text}: {error}', 'error')
+    
+    return render_template("criar_evento.html", form=form)
+
+@app.route('/meus-eventos')
+@login_required
+def meus_eventos():
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem acessar esta página.', 'error')
+        return redirect(url_for('inicio'))
+    
+    organizador_id = session['user_id']
+    eventos = Evento.query.filter_by(Organizador_ID=organizador_id).order_by(Evento.data.desc()).all()
+    
+    return render_template("meus_eventos.html", eventos=eventos)
+
+@app.route('/editar-evento/<int:evento_id>', methods=['GET', 'POST'])
+@login_required
+def editar_evento(evento_id):
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem editar eventos.', 'error')
+        return redirect(url_for('inicio'))
+    
+    evento = Evento.query.get_or_404(evento_id)
+    
+    # Verificar se o organizador é o dono do evento
+    if evento.Organizador_ID != session['user_id']:
+        flash('Você não tem permissão para editar este evento.', 'error')
+        return redirect(url_for('meus_eventos'))
+    
+    form = EventoForm(obj=evento)
+    
+    if form.validate_on_submit():
+        try:
+            evento.titulo = form.titulo.data
+            evento.descricao = form.descricao.data
+            evento.local = form.local.data
+            evento.data = form.data.data
+            evento.horario = form.horario.data
+            evento.categoria = form.categoria.data
+            evento.imagem_url = form.imagem_url.data or None
+            
+            db.session.commit()
+            flash('Evento atualizado com sucesso!', 'success')
+            return redirect(url_for('meus_eventos'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Erro ao atualizar evento.', 'error')
+            print(f"Erro: {e}")
+    
+    return render_template("editar_evento.html", form=form, evento=evento)
+
+@app.route('/excluir-evento/<int:evento_id>', methods=['POST'])
+@login_required
+def excluir_evento(evento_id):
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem excluir eventos.', 'error')
+        return redirect(url_for('inicio'))
+    
+    evento = Evento.query.get_or_404(evento_id)
+    
+    # Verificar se o organizador é o dono do evento
+    if evento.Organizador_ID != session['user_id']:
+        flash('Você não tem permissão para excluir este evento.', 'error')
+        return redirect(url_for('meus_eventos'))
+    
+    try:
+        db.session.delete(evento)
+        db.session.commit()
+        flash('Evento excluído com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao excluir evento.', 'error')
+        print(f"Erro: {e}")
+    
+    return redirect(url_for('meus_eventos'))
+
+@app.route('/eventos')
+def listar_eventos():
+    categoria = request.args.get('categoria')
+    search = request.args.get('search')
+    
+    query = Evento.query
+    
+    if categoria and categoria != 'todos':
+        query = query.filter_by(categoria=categoria)
+    
+    if search:
+        query = query.filter(Evento.titulo.ilike(f'%{search}%'))
+    
+    eventos = query.filter(Evento.data >= datetime.now().date()).order_by(Evento.data.asc()).all()
+    
+    categorias = [
+        ('todos', 'Todos'),
+        ('festas', 'Festas'),
+        ('shows', 'Shows'),
+        ('esportes', 'Esportes'),
+        ('tecnologia', 'Tecnologia'),
+        ('academico', 'Acadêmico'),
+        ('cultural', 'Cultural'),
+        ('workshop', 'Workshop'),
+        ('outros', 'Outros')
+    ]
+    
+    return render_template("eventos.html", eventos=eventos, categorias=categorias, categoria_selecionada=categoria)
+
 @app.route('/dashboard-organizador')
 @login_required
 def dashboard_organizador():
     if session.get('user_type') != 'organizador':
         flash('Acesso não autorizado.', 'error')
         return redirect(url_for('inicio'))
-    return "Dashboard do Organizador - Em desenvolvimento"
+    
+    organizador_id = session['user_id']
+    
+    # Estatísticas básicas
+    total_eventos = Evento.query.filter_by(Organizador_ID=organizador_id).count()
+    eventos_futuros = Evento.query.filter(
+        Evento.Organizador_ID == organizador_id,
+        Evento.data >= datetime.now().date()
+    ).count()
+    
+    # Próximos eventos
+    proximos_eventos = Evento.query.filter(
+        Evento.Organizador_ID == organizador_id,
+        Evento.data >= datetime.now().date()
+    ).order_by(Evento.data.asc()).limit(5).all()
+    
+    return render_template("dashboard_organizador.html", 
+                         total_eventos=total_eventos,
+                         eventos_futuros=eventos_futuros,
+                         proximos_eventos=proximos_eventos)
 
 if __name__ == '__main__':
     with app.app_context():
