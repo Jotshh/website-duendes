@@ -1,5 +1,5 @@
 from app import app, db, Usuario, Organizador
-from models import Organizador, Evento
+from models import Organizador, Evento, Atividades
 from datetime import datetime, timedelta
 
 
@@ -117,3 +117,50 @@ with app.app_context():
                 
     except Exception as e:
         print(f"❌ Erro ao criar eventos: {e}")
+
+with app.app_context():
+    try:
+        print("🧪 Criando atividades de teste...")
+        
+        # Buscar eventos existentes
+        eventos = Evento.query.all()
+        
+        if eventos and Atividades.query.count() == 0:
+            atividades_teste = [
+                {
+                    'titulo': 'Palestra de Abertura',
+                    'descricao': 'Palestra inicial sobre o tema do evento',
+                    'data': eventos[0].data,
+                    'horario_inicio': datetime.strptime('09:00', '%H:%M').time(),
+                    'horario_fim': datetime.strptime('10:30', '%H:%M').time(),
+                    'convidado': 'Dr. João Silva'
+                },
+                {
+                    'titulo': 'Workshop Prático',
+                    'descricao': 'Workshop hands-on para os participantes',
+                    'data': eventos[0].data,
+                    'horario_inicio': datetime.strptime('14:00', '%H:%M').time(),
+                    'horario_fim': datetime.strptime('17:00', '%H:%M').time(),
+                    'convidado': 'Prof. Maria Santos'
+                }
+            ]
+            
+            for atividade_data in atividades_teste:
+                atividade = Atividades(
+                    titulo=atividade_data['titulo'],
+                    descricao=atividade_data['descricao'],
+                    data=atividade_data['data'],
+                    horario_inicio=atividade_data['horario_inicio'],
+                    horario_fim=atividade_data['horario_fim'],
+                    convidado=atividade_data['convidado'],
+                    Evento_ID=eventos[0].ID
+                )
+                db.session.add(atividade)
+            
+            db.session.commit()
+            print("✅ Atividades de teste criadas com sucesso!")
+        else:
+            print("✅ Atividades já existem ou não há eventos")
+            
+    except Exception as e:
+        print(f"❌ Erro ao criar atividades: {e}")
