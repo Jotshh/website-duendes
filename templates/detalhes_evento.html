@@ -178,6 +178,11 @@
                 {{ evento.categoria|title }}
             </div>
         </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="/evento/{{ evento.ID }}/atividades" class="btn-criar" style="display: inline-block;">
+                📋 Ver Programação de Atividades
+            </a>
+        </div>
 
         {% if g.user %}
             {% if session.user_type == 'usuario' %}

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Evento - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+    <style>
+        .alert {
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-criar {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-criar:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-cancelar {
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .btn-cancelar:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .btn-voltar {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            padding: 8px 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .btn-voltar:hover {
+            color: #0056b3;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        select.form-control {
+            background: white;
+            cursor: pointer;
+        }
+        
+        .evento-preview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .evento-preview h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .evento-preview p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn-criar, .btn-cancelar {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/dashboard-organizador">Dashboard</a></li>
+                    <li><a href="/meus-eventos">Meus Eventos</a></li>
+                    <li><a href="/criar-evento">Criar Evento</a></li>
+                    <li><a href="/sair">Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <button class="btn-voltar" type="button" onclick="history.back()">
+                ⬅ Voltar para Meus Eventos
+            </button>
+
+            <h2 style="margin: 0 0 20px 0">Editar Evento</h2>
+
+            <!-- Preview do Evento -->
+            <div class="evento-preview">
+                <h3>{{ evento.titulo }}</h3>
+                <p><strong>Data:</strong> {{ evento.data.strftime('%d/%m/%Y') if evento.data else 'Não definida' }}</p>
+                <p><strong>Local:</strong> {{ evento.local or 'Não definido' }}</p>
+                <p><strong>Status:</strong> 
+                    <span>
+                        {% if evento.data and evento.data >= datetime.now().date() %}Ativo{% else %}Encerrado{% endif %}
+                    </span>
+                </p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label for="titulo">Título do Evento *</label>
+                    {{ form.titulo(class="form-control", placeholder="Digite o título do evento", required=true) }}
+                    <small style="color: #666; font-size: 12px;">Máximo 100 caracteres</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="descricao">Descrição *</label>
+                    {{ form.descricao(class="form-control", rows="5", placeholder="Descreva detalhadamente o evento...", required=true) }}
+                    <small style="color: #666; font-size: 12px;">Forneça informações completas sobre o evento</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="local">Local *</label>
+                    {{ form.local(class="form-control", placeholder="Ex: Centro de Convenções, Av. Principal, 123", required=true) }}
+                    <small style="color: #666; font-size: 12px;">Endereço completo do local do evento</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data">Data do Evento *</label>
+                        {{ form.data(class="form-control", type="date", required=true) }}
+                        <small style="color: #666; font-size: 12px;">Data em que o evento ocorrerá</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horario">Horário *</label>
+                        {{ form.horario(class="form-control", type="time", required=true) }}
+                        <small style="color: #666; font-size: 12px;">Horário de início do evento</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoria *</label>
+                    {{ form.categoria(class="form-control", required=true) }}
+                    <small style="color: #666; font-size: 12px;">Selecione a categoria que melhor representa seu evento</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="imagem_url">URL da Imagem</label>
+                    {{ form.imagem_url(class="form-control", placeholder="https://exemplo.com/imagem-do-evento.jpg") }}
+                    <small style="color: #666; font-size: 12px;">Cole a URL de uma imagem para representar seu evento (opcional)</small>
+                    
+                    <!-- Preview da imagem -->
+                    {% if evento.imagem_url %}
+                        <div style="margin-top: 10px;">
+                            <p style="font-size: 14px; margin-bottom: 8px;"><strong>Imagem atual:</strong></p>
+                            <img src="{{ evento.imagem_url }}" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 4px; border: 1px solid #ddd;">
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-criar">
+                        💾 Salvar Alterações
+                    </button>
+                    <a href="/meus-eventos" class="btn-cancelar">
+                        ❌ Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <!-- Informações adicionais -->
+            <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                <h4 style="margin: 0 0 10px 0; color: #17a2b8;">📋 Informações do Evento</h4>
+                <div style="font-size: 14px; color: #666;">
+                    <p><strong>ID do Evento:</strong> {{ evento.ID }}</p>
+                    <p><strong>Criado em:</strong> {{ evento.data_criacao.strftime('%d/%m/%Y às %H:%M') if evento.data_criacao else 'Não disponível' }}</p>
+                    <p><strong>Organizador:</strong> {{ g.user.nome if g.user else 'Você' }}</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="/static/logo.png" alt="Duendes Site" style="height: 40px;">
+                    <p>Encontre os melhores eventos da sua cidade</p>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contato</h4>
+                    <p>email: contato@duendessite.com</p>
+                    <p>telefone: (67) 99999-9999</p>
+                </div>
+                <div class="footer-social">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#">Instagram</a>
+                        <a href="#">Facebook</a>
+                        <a href="#">Twitter</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Validação de data no frontend
+        document.addEventListener('DOMContentLoaded', function() {
+            const dataField = document.getElementById('data');
+            const hoje = new Date().toISOString().split('T')[0];
+            
+            // Definir data mínima como hoje
+            dataField.min = hoje;
+            
+            // Validação em tempo real
+            dataField.addEventListener('change', function() {
+                const dataSelecionada = new Date(this.value);
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                
+                if (dataSelecionada < hoje) {
+                    alert('A data do evento não pode ser no passado!');
+                    this.value = hoje.toISOString().split('T')[0];
+                }
+            });
+            
+            // Preview da nova imagem
+            const imagemUrlField = document.getElementById('imagem_url');
+            imagemUrlField.addEventListener('blur', function() {
+                if (this.value) {
+                    // Aqui poderia ser implementado um preview da nova imagem
+                    console.log('Nova URL de imagem:', this.value);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
