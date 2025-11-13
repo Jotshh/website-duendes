@@ -81,7 +81,8 @@ class Evento(db.Model):
             'imagem_url': self.imagem_url,
             'data_criacao': self.data_criacao
         }
-
+    
+#CRIAR CLASSE ATIVIDADES
 class Atividades(db.Model):
     __tablename__ = 'Atividades'
     
@@ -95,7 +96,20 @@ class Atividades(db.Model):
     Evento_ID = db.Column(db.Integer, db.ForeignKey('Evento.ID'), nullable=False)
     data_criacao = db.Column(db.TIMESTAMP, server_default=db.func.now())
     
-    evento = db.relationship('Evento', backref='atividades') 
+    evento = db.relationship('Evento', backref='atividades')
+    
+    def to_dict(self):
+        return {
+            'id': self.ID,
+            'titulo': self.titulo,
+            'descricao': self.descricao,
+            'data': self.data.isoformat() if self.data else None,
+            'horario_inicio': self.horario_inicio.strftime('%H:%M') if self.horario_inicio else None,
+            'horario_fim': self.horario_fim.strftime('%H:%M') if self.horario_fim else None,
+            'convidado': self.convidado,
+            'evento_id': self.Evento_ID,
+            'data_criacao': self.data_criacao
+        }
 
 #CRIAR CLASSE INSCRICAO
 class Inscricao(db.Model):

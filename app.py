@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, jsonify, flash, url_for, session, g
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Usuario, Organizador, Evento, Inscricao
-from forms import CadastroForm, LoginForm, EventoForm 
+from models import db, Usuario, Organizador, Evento, Inscricao, Atividades
+from forms import CadastroForm, LoginForm, EventoForm, AtividadeForm
 import functools
 from datetime import datetime
 
@@ -251,7 +251,9 @@ def editar_evento(evento_id):
             flash('Erro ao atualizar evento.', 'error')
             print(f"Erro: {e}")
     
-    return render_template("editar_evento.html", form=form, evento=evento)
+    # Passar datetime para o template
+    from datetime import datetime
+    return render_template("editar_evento.html", form=form, evento=evento, datetime=datetime)
 
 @app.route('/excluir-evento/<int:evento_id>', methods=['POST'])
 @login_required
@@ -463,6 +465,123 @@ def api_eventos():
             'error': 'Erro ao carregar eventos',
             'eventos': []
         }), 500
+
+#CRIA ROTA DAS ATIVIDADES
+  
+@app.route('/evento/<int:evento_id>/atividades')
+def listar_atividades(evento_id):
+    evento = Evento.query.get_or_404(evento_id)
+    atividades = Atividades.query.filter_by(Evento_ID=evento_id).order_by(Atividades.data, Atividades.horario_inicio).all()
+    
+    return render_template("atividades.html", evento=evento, atividades=atividades)
+
+@app.route('/evento/<int:evento_id>/adicionar-atividade', methods=['GET', 'POST'])
+@login_required
+def adicionar_atividade(evento_id):
+    # Verificar se o usuário é organizador e dono do evento
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem adicionar atividades.', 'error')
+        return redirect(url_for('listar_eventos'))
+    
+    evento = Evento.query.get_or_404(evento_id)
+    
+    # Verificar se o organizador é o dono do evento
+    if evento.Organizador_ID != session['user_id']:
+        flash('Você não tem permissão para adicionar atividades a este evento.', 'error')
+        return redirect(url_for('meus_eventos'))
+    
+    form = AtividadeForm()
+    
+    if form.validate_on_submit():
+        try:
+            nova_atividade = Atividades(
+                titulo=form.titulo.data,
+                descricao=form.descricao.data,
+                data=form.data.data,
+                horario_inicio=form.horario_inicio.data,
+                horario_fim=form.horario_fim.data,
+                convidado=form.convidado.data,
+                Evento_ID=evento_id
+            )
+            
+            db.session.add(nova_atividade)
+            db.session.commit()
+            
+            flash('Atividade adicionada com sucesso!', 'success')
+            return redirect(url_for('listar_atividades', evento_id=evento_id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Erro ao adicionar atividade. Tente novamente.', 'error')
+            print(f"Erro: {e}")
+    
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f'{getattr(form, field).label.text}: {error}', 'error')
+    
+    return render_template("adicionar_atividade.html", form=form, evento=evento)
+
+@app.route('/editar-atividade/<int:atividade_id>', methods=['GET', 'POST'])
+@login_required
+def editar_atividade(atividade_id):
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem editar atividades.', 'error')
+        return redirect(url_for('listar_eventos'))
+    
+    atividade = Atividades.query.get_or_404(atividade_id)
+    evento = Evento.query.get_or_404(atividade.Evento_ID)
+    
+    # Verificar se o organizador é o dono do evento
+    if evento.Organizador_ID != session['user_id']:
+        flash('Você não tem permissão para editar esta atividade.', 'error')
+        return redirect(url_for('meus_eventos'))
+    
+    form = AtividadeForm(obj=atividade)
+    
+    if form.validate_on_submit():
+        try:
+            atividade.titulo = form.titulo.data
+            atividade.descricao = form.descricao.data
+            atividade.data = form.data.data
+            atividade.horario_inicio = form.horario_inicio.data
+            atividade.horario_fim = form.horario_fim.data
+            atividade.convidado = form.convidado.data
+            
+            db.session.commit()
+            flash('Atividade atualizada com sucesso!', 'success')
+            return redirect(url_for('listar_atividades', evento_id=atividade.Evento_ID))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Erro ao atualizar atividade.', 'error')
+            print(f"Erro: {e}")
+    
+    return render_template("editar_atividade.html", form=form, atividade=atividade, evento=evento)
+
+@app.route('/excluir-atividade/<int:atividade_id>', methods=['POST'])
+@login_required
+def excluir_atividade(atividade_id):
+    if session.get('user_type') != 'organizador':
+        flash('Apenas organizadores podem excluir atividades.', 'error')
+        return redirect(url_for('listar_eventos'))
+    
+    atividade = Atividades.query.get_or_404(atividade_id)
+    evento = Evento.query.get_or_404(atividade.Evento_ID)
+    
+    if evento.Organizador_ID != session['user_id']:
+        flash('Você não tem permissão para excluir esta atividade.', 'error')
+        return redirect(url_for('meus_eventos'))
+    
+    try:
+        db.session.delete(atividade)
+        db.session.commit()
+        flash('Atividade excluída com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao excluir atividade.', 'error')
+        print(f"Erro: {e}")
+    
+    return redirect(url_for('listar_atividades', evento_id=atividade.Evento_ID))
 
 if __name__ == '__main__':
     with app.app_context():
