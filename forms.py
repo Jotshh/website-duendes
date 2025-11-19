@@ -32,8 +32,10 @@ class CadastroForm(FlaskForm):
             raise ValidationError('CPF já está cadastrado.')
 
 class LoginForm(FlaskForm):
-    usuario = StringField('Usuário ou Email', validators=[DataRequired()])
-    senha = PasswordField('Senha', validators=[DataRequired()])
+    usuario = StringField('Usuário ou Email', validators=[DataRequired()], 
+                         render_kw={"placeholder": "Digite seu usuário ou email"})
+    senha = PasswordField('Senha', validators=[DataRequired()],
+                         render_kw={"placeholder": "Digite sua senha"})
     tipo = SelectField('Tipo de Login', 
                       choices=[('usuario', 'Usuário'), ('organizador', 'Organizador')],
                       validators=[DataRequired()])

@@ -1,119 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css/style.css" />
-    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
-    
-    <title>Entrar</title>
-    <style>
-        .alert {
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 15px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/autenticacao.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
 </head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <div class="logo">
-                <img src="/static/logo.png" alt="Events Logo" />
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="/static/logo.png" alt="Duendes Site">
+                    <span>Duendes Site</span>
+                </div>
+                <h1 class="auth-title">Bem-vindo de volta!</h1>
+                <p class="auth-subtitle">Acesse sua conta para continuar</p>
             </div>
-            <nav class="main-nav">
-    <ul>
-        <li><a href="/">Home</a></li>
-        {% if session.user_type == 'organizador' %}
-            <li><a href="/dashboard-organizador">Dashboard</a></li>
-            <li><a href="/meus-eventos">Meus Eventos</a></li>
-            <li><a href="/criar-evento">Criar Evento</a></li>
-        {% else %}
-            <li><a href="/entrar">Entrar</a></li>
-            <li><a href="/cadastro">Cadastrar</a></li>
-        {% endif %}
-        <li><a href="/eventos">Eventos</a></li>
-        {% if g.user %}
-            <li><a href="/perfil">Meu perfil</a></li>
-            <li><a href="/sair">Sair</a></li>
-        {% endif %}
-    </ul>
-</nav>
-        </div>
-    </header>
 
-    <main class="container">
-        <section class="card" aria-labelledby="login-title">
-            <button class="btn-voltar" type="button" onclick="history.back()">
-                ⬅ Voltar
-            </button>
-            
-            <h2 id="login-title" style="margin: 0 0 20px 0">Fazer login na Conta</h2>
-           
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
+            <div class="auth-body">
+                <div class="back-button-container">
+                    <a href="{{ url_for('inicio') }}" class="btn-voltar">
+                        <span>←</span> Voltar ao Início
+                    </a>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="auth-alert {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="auth-form">
+                    {{ form.hidden_tag() }}
+
+                    <div class="login-type-toggle" id="loginTypeToggle">
+                        <div class="login-type-option {% if form.tipo.data == 'usuario' or not form.tipo.data %}active{% endif %}" data-type="usuario">
+                            Usuário
                         </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+                        <div class="login-type-option {% if form.tipo.data == 'organizador' %}active{% endif %}" data-type="organizador">
+                            Organizador
+                        </div>
+                    </div>
+                    {{ form.tipo(id="tipoInput", style="display: none;") }}
 
-            <form id="entrarForm" method="post">
-                {{ form.hidden_tag() }}
-                
-                <div class="form-group">
-                    <label for="tipo">Tipo de Conta</label>
-                    {{ form.tipo(id="tipo", class="form-control") }}
-                </div>
+                    <div class="form-group">
+                        <label for="usuario" id="usuarioLabel">
+                            {% if form.tipo.data == 'organizador' %}E-mail{% else %}Usuário ou E-mail{% endif %}
+                        </label>
+                        {{ form.usuario(class="form-control", placeholder=("Digite seu e-mail" if form.tipo.data == 'organizador' else "Digite seu usuário ou e-mail")) }}
+                        {% if form.usuario.errors %}
+                            <div class="form-errors">
+                                {% for error in form.usuario.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
 
-                <div class="form-group">
-                    <label for="usuario">Usuário ou Email</label>
-                    {{ form.usuario(id="usuario", class="form-control", placeholder="Digite seu usuário ou email", required=true) }}
-                </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        {{ form.senha(class="form-control", placeholder="Digite sua senha") }}
+                        {% if form.senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="forgot-password">
+                            <a href="#">Esqueceu a senha?</a>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="senha">Senha</label>
-                    {{ form.senha(id="senha", class="form-control", placeholder="Digite sua senha", required=true) }}
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <button class="btn-criar" type="submit">Entrar</button>
-                </div>
-            </form>
-        </section>
-    </main>
+                    <button type="submit" class="auth-submit">
+                        Entrar na Conta
+                    </button>
+
+                    <div class="auth-links">
+                        Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se aqui</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoInput = document.getElementById('tipoInput');
+            const loginTypeToggle = document.getElementById('loginTypeToggle');
+            const usuarioLabel = document.getElementById('usuarioLabel');
+            const usuarioInput = document.getElementById('usuario');
+            
+            if (!tipoInput.value) {
+                tipoInput.value = 'usuario';
+            }
+            
+            loginTypeToggle.addEventListener('click', function(e) {
+                if (e.target.classList.contains('login-type-option')) {
+                    document.querySelectorAll('.login-type-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    e.target.classList.add('active');
+                    
+                    const type = e.target.getAttribute('data-type');
+                    tipoInput.value = type;
+                    
+                    if (type === 'organizador') {
+                        usuarioLabel.textContent = 'E-mail';
+                        usuarioInput.placeholder = 'Digite seu e-mail';
+                    } else {
+                        usuarioLabel.textContent = 'Usuário ou E-mail';
+                        usuarioInput.placeholder = 'Digite seu usuário ou e-mail';
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

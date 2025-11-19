@@ -1,140 +1,141 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/static/css/style.css" />
-    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
-    <title>Cadastro</title>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/autenticacao.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
 </head>
-
-<body>
-    <header class="site-header">
-        <div class="container">
-            <div class="logo">
-                <img src="/static/logo.png" alt="Events Logo" />
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="/static/logo.png" alt="Duendes Site">
+                    <span>Duendes Site</span>
+                </div>
+                <h1 class="auth-title">Criar Conta</h1>
+                <p class="auth-subtitle">Junte-se à nossa comunidade de eventos</p>
             </div>
-            <nav class="main-nav">
-    <ul>
-        <li><a href="/">Home</a></li>
-        {% if session.user_type == 'organizador' %}
-            <li><a href="/dashboard-organizador">Dashboard</a></li>
-            <li><a href="/meus-eventos">Meus Eventos</a></li>
-            <li><a href="/criar-evento">Criar Evento</a></li>
-        {% else %}
-            <li><a href="/entrar">Entrar</a></li>
-            <li><a href="/cadastro">Cadastrar</a></li>
-        {% endif %}
-        <li><a href="/eventos">Eventos</a></li>
-        {% if g.user %}
-            <li><a href="/perfil">Meu perfil</a></li>
-            <li><a href="/sair">Sair</a></li>
-        {% endif %}
-    </ul>
-</nav>
-        </div>
-    </header>
 
-    <main class="container">
-        <section class="card" aria-labelledby="cadastro-title">
-            <button class="btn-voltar" type="button" id="btnVoltar" onclick="history.back()">
-                ⬅ Voltar
-            </button>
-            <h2 id="cadastro-title" style="margin: 0 0 8px 0">Criar sua conta</h2>
+            <div class="auth-body">
+                <div class="back-button-container">
+                    <a href="{{ url_for('inicio') }}" class="btn-voltar">
+                        <span>←</span> Voltar ao Início
+                    </a>
+                </div>
 
-            
-            
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
+                            <div class="auth-alert {{ category }}">
                                 {{ message }}
                             </div>
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
 
-            <form id="cadastroForm" method="POST" novalidate>
-                {{ form.hidden_tag() }}
-                
-                <div>
-                    <label for="nome">Nome</label>
-                    {{ form.nome(id="nome", class="form-control", placeholder="Nome", required=true) }}
-                    <div id="nomeError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="usuario">Nome de usuário</label>
-                    {{ form.usuario(id="usuario", class="form-control", placeholder="Nome de usuário", required=true) }}
-                    <div id="usuarioError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="cpf">CPF</label>
-                    {{ form.cpf(id="cpf", class="form-control", placeholder="000.000.000-00", required=true) }}
-                    <div id="cpfError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="telefone">Telefone</label>
-                    {{ form.telefone(id="telefone", class="form-control", placeholder="(00) 00000-0000", required=true) }}
-                    <div id="telefoneError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="email">Email</label>
-                    {{ form.email(id="email", class="form-control", placeholder="seu@email.com", required=true) }}
-                    <div id="emailError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="senha">Senha</label>
-                    {{ form.senha(id="senha", class="form-control", placeholder="••••••••", required=true, minlength="6") }}
-                    <div id="senhaError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div>
-                    <label for="confirma_senha">Confirme sua senha</label>
-                    {{ form.confirma_senha(id="confirma_senha", class="form-control", placeholder="••••••••", required=true, minlength="6") }}
-                    <div id="confirmaSenhaError" class="error" aria-live="polite" style="display: none"></div>
-                </div>
-
-                <div style="margin-top: 10px;">
-                    <button class="btn-criar" type="submit">Criar conta</button>
-                </div>
-            </form>
-
-            <footer class="footer-cadastro">
-                Ao continuar você aceita os 
-                <a href="#" class="link"> Termos de Uso</a>.
-            </footer>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="/static/logo.png" alt="Duendes Site" style="height: 40px;">
-                    <p>Encontre os melhores eventos da sua cidade</p>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contato</h4>
-                    <p>email: contato@duendessite.com</p>
-                    <p>telefone: (67) 99999-9999</p>
-                </div>
-                <div class="footer-social">
-                    <h4>Redes Sociais</h4>
-                    <div class="social-links">
-                        <a href="#">Instagram</a>
-                        <a href="#">Facebook</a>
-                        <a href="#">Twitter</a>
+                <form method="POST" class="auth-form">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        {{ form.nome(class="form-control", placeholder="Digite seu nome completo") }}
+                        {% if form.nome.errors %}
+                            <div class="form-errors">
+                                {% for error in form.nome.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
-                </div>
+
+                    <div class="form-group">
+                        <label for="usuario">Nome de Usuário *</label>
+                        {{ form.usuario(class="form-control", placeholder="Escolha um nome de usuário") }}
+                        {% if form.usuario.errors %}
+                            <div class="form-errors">
+                                {% for error in form.usuario.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cpf">CPF *</label>
+                            {{ form.cpf(class="form-control", placeholder="000.000.000-00") }}
+                            {% if form.cpf.errors %}
+                                <div class="form-errors">
+                                    {% for error in form.cpf.errors %}
+                                        <small class="error-text">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone">Telefone *</label>
+                            {{ form.telefone(class="form-control", placeholder="(00) 00000-0000") }}
+                            {% if form.telefone.errors %}
+                                <div class="form-errors">
+                                    {% for error in form.telefone.errors %}
+                                        <small class="error-text">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        {{ form.email(class="form-control", placeholder="seu@email.com") }}
+                        {% if form.email.errors %}
+                            <div class="form-errors">
+                                {% for error in form.email.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha">Senha *</label>
+                        {{ form.senha(class="form-control", placeholder="Digite sua senha") }}
+                        {% if form.senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirma_senha">Confirmar Senha *</label>
+                        {{ form.confirma_senha(class="form-control", placeholder="Digite a senha novamente") }}
+                        {% if form.confirma_senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.confirma_senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="auth-submit">
+                        Criar Minha Conta
+                    </button>
+
+                    <div class="auth-links">
+                        Já tem uma conta? <a href="{{ url_for('entrar') }}">Faça login aqui</a>
+                    </div>
+                </form>
             </div>
         </div>
-    </footer>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </div>
 </body>
 </html>
