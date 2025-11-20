@@ -5,315 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventos - Duendes Site</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
-    <style>
-        .filtros {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .filtros-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .form-control {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        
-        .btn-buscar {
-            background: #e91e63;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-buscar:hover {
-            background: #d81b60;
-            transform: translateY(-2px);
-        }
-        
-        .event-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-        
-        .event-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .event-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .card-content {
-            padding: 20px;
-            position: relative;
-        }
-        
-        .card-content h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.2em;
-            line-height: 1.4;
-        }
-        
-        .card-content h3 a {
-            color: #333;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .card-content h3 a:hover {
-            color: #e91e63;
-        }
-        
-        .card-content p {
-            margin: 5px 0;
-            color: #666;
-            font-size: 0.9em;
-        }
-        
-        .event-category {
-            display: inline-block;
-            background: #f8f9fa;
-            color: #495057;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-top: 10px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .organizador-info {
-            color: #888;
-            font-size: 0.85em;
-            margin-top: 8px;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .empty-state img {
-            max-width: 200px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
-        .results-info {
-            margin-bottom: 20px;
-            color: #666;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .filtros-form {
-                grid-template-columns: 1fr;
-            }
-            
-            .event-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
 </head>
-<body>
-    <header class="site-header">
+<body class="eventos-page">
+    {% include 'componentes/header.html' %}
+
+    <main class="main-content">
         <div class="container">
-            <div class="logo">
-                <img src="/static/logo.png" alt="Events Logo">
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    {% if session.user_type == 'organizador' %}
-                        <li><a href="/dashboard-organizador">Dashboard</a></li>
-                        <li><a href="/meus-eventos">Meus Eventos</a></li>
-                        <li><a href="/criar-evento">Criar Evento</a></li>
-                    {% else %}
-                        <li><a href="/entrar">Entrar</a></li>
-                        <li><a href="/cadastro">Cadastrar</a></li>
-                    {% endif %}
-                    <li><a href="/eventos" class="active">Eventos</a></li>                   
-                    {% if g.user %}
-                        {% if session.user_type == 'usuario' %}
-                            <li><a href="/minhas-inscricoes">Minhas Inscrições</a></li>
-                        {% endif %}
-                        <li><a href="/perfil">Meu perfil</a></li>
-                        <li><a href="/sair">Sair</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class="container">
-        <section>
-            <h1 style="margin-bottom: 10px;">Explore Eventos</h1>
-            <p style="color: #666; margin-bottom: 30px;">Encontre os melhores eventos da sua cidade</p>
-
-            <!-- Filtros -->
-            <div class="filtros">
-                <form method="GET" action="/eventos" class="filtros-form">
-                    <div class="form-group">
-                        <label for="search">Buscar Eventos</label>
-                        <input type="text" id="search" name="search" class="form-control" 
-                               placeholder="Digite o nome do evento..." value="{{ request.args.get('search', '') }}">
+            <section class="eventos-section">
+                <div class="section-header">
+                    <h1 style="margin-bottom: 10px;">Explore Eventos</h1>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="categoria">Categoria</label>
-                        <select id="categoria" name="categoria" class="form-control">
-                            <option value="todos">Todas as categorias</option>
-                            {% for value, label in categorias %}
-                                <option value="{{ value }}" 
-                                    {% if categoria_selecionada == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <button type="submit" class="btn-buscar">Buscar</button>
-                    </div>
-                </form>
-            </div>
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
+                <div class="filtros">
+                    <form method="GET" action="/eventos" class="filtros-form">
+                        <div class="form-group">
+                            <label for="search">Buscar Eventos</label>
+                            <input type="text" id="search" name="search" class="form-control" 
+                                   placeholder="Digite o nome do evento..." value="{{ request.args.get('search', '') }}">
                         </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <!-- Informações dos resultados -->
-            {% if eventos %}
-                <div class="results-info">
-                    {{ eventos|length }} evento(s) encontrado(s)
-                    {% if request.args.get('search') %}
-                        para "{{ request.args.get('search') }}"
-                    {% endif %}
-                    {% if categoria_selecionada and categoria_selecionada != 'todos' %}
-                        na categoria {{ categorias|selectattr('0', 'equalto', categoria_selecionada)|map(attribute='1')|first }}
-                    {% endif %}
+                        
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria" name="categoria" class="form-control">
+                                <option value="todos">Todas as categorias</option>
+                                {% for value, label in categorias %}
+                                    <option value="{{ value }}" 
+                                        {% if categoria_selecionada == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
+                    </form>
                 </div>
-            {% endif %}
 
-            <!-- Grid de Eventos -->
-            {% if eventos %}
-                <div class="event-grid">
-                    {% for evento in eventos %}
-                        <div class="event-card">
-                            {% if evento.imagem_url %}
-                                <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}">
-                            {% else %}
-                                <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem">
-                            {% endif %}
-                            
-                            <div class="card-content">
-                                <h3>
-                                    <a href="/evento/{{ evento.ID }}">{{ evento.titulo }}</a>
-                                </h3>
-                                <p>📅 {{ evento.data.strftime('%d/%m/%Y') }}</p>
-                                <p>🕒 {{ evento.horario.strftime('%H:%M') }}</p>
-                                <p>📍 {{ evento.local }}</p>
-                                
-                                {% if evento.organizador %}
-                                    <p class="organizador-info">
-                                        Organizado por: {{ evento.organizador.nome }}
-                                    </p>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if eventos %}
+                    <div class="results-info">
+                        <strong>{{ eventos|length }}</strong> evento(s) encontrado(s)
+                        {% if request.args.get('search') %}
+                            para "{{ request.args.get('search') }}"
+                        {% endif %}
+                        {% if categoria_selecionada and categoria_selecionada != 'todos' %}
+                            na categoria {{ categorias|selectattr('0', 'equalto', categoria_selecionada)|map(attribute='1')|first }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if eventos %}
+                    <div class="eventos-grid">
+                        {% for evento in eventos %}
+                            <div class="event-card">
+                                {% if evento.imagem_url %}
+                                    <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}" class="event-image">
+                                {% else %}
+                                    <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem" class="event-image">
                                 {% endif %}
                                 
-                                <span class="event-category">{{ evento.categoria|title }}</span>
+                                <div class="event-content">
+                                    <h3 class="event-title">
+                                        <a href="/evento/{{ evento.ID }}">{{ evento.titulo }}</a>
+                                    </h3>
+                                    <div class="event-info">
+                                        <span>📅 {{ evento.data.strftime('%d/%m/%Y') }}</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <span>🕒 {{ evento.horario.strftime('%H:%M') }}</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <span>📍 {{ evento.local }}</span>
+                                    </div>
+                                    
+                                    {% if evento.organizador %}
+                                        <p class="organizador-info">
+                                            Organizado por: {{ evento.organizador.nome }}
+                                        </p>
+                                    {% endif %}
+                                    
+                                    <span class="event-category">{{ evento.categoria|title }}</span>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <div style="font-size: 4em; margin-bottom: 20px;">🔍</div>
-                    <h3>Nenhum evento encontrado</h3>
-                    <p>
-                        {% if request.args.get('search') or (categoria_selecionada and categoria_selecionada != 'todos') %}
-                            Tente ajustar os filtros de busca ou 
-                            <a href="/eventos">ver todos os eventos</a>.
-                        {% else %}
-                            Não há eventos disponíveis no momento. 
-                            {% if session.user_type == 'organizador' %}
-                                <a href="/criar-evento">Que tal criar o primeiro?</a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div style="font-size: 4em; margin-bottom: 20px;">🔍</div>
+                        <h3>Nenhum evento encontrado</h3>
+                        <p>
+                            {% if request.args.get('search') or (categoria_selecionada and categoria_selecionada != 'todos') %}
+                                Tente ajustar os filtros de busca ou 
+                                <a href="/eventos">ver todos os eventos</a>.
+                            {% else %}
+                                Não há eventos disponíveis no momento. 
+                                {% if session.user_type == 'organizador' %}
+                                    <a href="/criar-evento">Que tal criar o primeiro?</a>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    </p>
-                </div>
-            {% endif %}
-        </section>
+                        </p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="/static/logo.png" alt="Duendes Site" style="height: 40px;">
-                    <p>Encontre os melhores eventos da sua cidade</p>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contato</h4>
-                    <p>email: contato@duendessite.com</p>
-                    <p>telefone: (67) 99999-9999</p>
-                </div>
-                <div class="footer-social">
-                    <h4>Redes Sociais</h4>
-                    <div class="social-links">
-                        <a href="#">Instagram</a>
-                        <a href="#">Facebook</a>
-                        <a href="#">Twitter</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    {% include 'componentes/footer.html' %}
 </body>
 </html>

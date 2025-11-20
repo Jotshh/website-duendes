@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duendes Site</title>
-    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/layouts/index.css">
     <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
 </head>
 <body>
@@ -100,27 +100,7 @@
         </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <img src="/static/logo.png" alt="Duendes Site">
-                <p>Encontre os melhores eventos da sua cidade</p>
-            </div>
-            <div class="footer-contact">
-                <h4>Contato</h4>
-                <p>email: contato@duendessite.com</p>
-                <p>telefone: (67) 99999-9999</p>
-            </div>
-            <div class="footer-social">
-                <h4>Redes Sociais</h4>
-                <div class="social-links">
-                    <a href="#">Instagram</a>
-                    <a href="#">Facebook</a>
-                    <a href="#">Twitter</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    {% include 'componentes/footer.html' %}
 
     <script src="/static/js/carrossel.js"></script>
     <script src="/static/js/eventos.js"></script>

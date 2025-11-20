@@ -1,0 +1,29 @@
+<header class="site-header">
+    <div class="container">
+        <div class="logo">
+            <img src="/static/logo.png" alt="Duendes Site">
+            <span>Duendes Site</span>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
+                {% if session.user_type == 'organizador' %}
+                    <li><a href="/dashboard-organizador">Dashboard</a></li>
+                    <li><a href="/meus-eventos">Meus Eventos</a></li>
+                    <li><a href="/criar-evento">Criar Evento</a></li>
+                {% else %}
+                    <li><a href="/entrar">Entrar</a></li>
+                    <li><a href="/cadastro">Cadastrar</a></li>
+                {% endif %}
+                <li><a href="/eventos" {% if request.path == '/eventos' %}class="active"{% endif %}>Eventos</a></li>
+                {% if g.user %}
+                    {% if session.user_type == 'usuario' %}
+                        <li><a href="/minhas-inscricoes">Minhas Inscrições</a></li>
+                    {% endif %}
+                    <li><a href="/perfil">Meu perfil</a></li>
+                    <li><a href="/sair">Sair</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>

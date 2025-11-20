@@ -1,39 +1,66 @@
-@import url('index.css');
-@import url('autenticao.css');
+@import url('base/variaveis.css');
+@import url('base/reset.css');
+@import url('componentes/header.css');
+@import url('componentes/footer.css');
+@import url('componentes/cards.css');
+@import url('componentes/buttons.css');
+@import url('componentes/forms.css');
+@import url('layouts/autenticacao.css');
+@import url('layouts/eventos.css');
+@import url('layouts/dashboard.css');
 
-.btn-criar {
-    display: inline-block;
-    padding: 12px 24px;
-    background: linear-gradient(90deg, var(--primary-color), #ff6b9c);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
 }
 
-.btn-criar:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+.main-content {
+    flex: 1;
+    padding: var(--spacing-xl) 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    font-size: var(--font-size-3xl);
+    color: var(--secondary-color);
+    margin: 0;
 }
 
 .alert {
-    padding: 12px 16px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    border-left: 4px solid;
 }
 
 .alert-success {
     background: #d4edda;
     color: #155724;
-    border: 1px solid #c3e6cb;
+    border-left-color: #28a745;
 }
 
 .alert-error {
     background: #f8d7da;
     color: #721c24;
-    border: 1px solid #f5c6cb;
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left-color: #17a2b8;
 }

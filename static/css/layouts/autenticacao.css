@@ -55,7 +55,6 @@
     padding: 30px;
 }
 
-/* Formulários */
 .auth-form .form-group {
     margin-bottom: 20px;
 }
@@ -90,14 +89,12 @@
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
 }
 
-/* Grupo de inputs lado a lado */
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
-/* Select personalizado */
 .select-wrapper {
     position: relative;
 }
@@ -117,7 +114,6 @@
     cursor: pointer;
 }
 
-/* Botão de submit */
 .auth-submit {
     width: 100%;
     padding: 16px;
@@ -141,7 +137,6 @@
     transform: translateY(0);
 }
 
-/* Links de autenticação */
 .auth-links {
     text-align: center;
     margin-top: 25px;
@@ -161,7 +156,6 @@
     text-decoration: underline;
 }
 
-/* Alertas específicos para auth */
 .auth-alert {
     padding: 12px 16px;
     border-radius: 10px;
@@ -188,7 +182,6 @@
     border-left-color: #17a2b8;
 }
 
-/* Toggle de tipo de login */
 .login-type-toggle {
     display: flex;
     background: #f8f9fa;
@@ -214,7 +207,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Password strength indicator */
 .password-strength {
     margin-top: 8px;
     height: 4px;
@@ -280,7 +272,6 @@
     text-decoration: underline;
 }
 
-/* Remove os estilos de validação de senha que não usaremos mais */
 .password-strength,
 .strength-bar {
     display: none;
@@ -290,7 +281,6 @@
 .strength-medium { background: #ffc107; width: 66%; }
 .strength-strong { background: #28a745; width: 100%; }
 
-/* Responsividade */
 @media (max-width: 480px) {
     .auth-page {
         padding: 10px;
@@ -313,7 +303,6 @@
     }
 }
 
-/* Animações */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -329,7 +318,6 @@
     animation: slideIn 0.5s ease;
 }
 
-/* Loading state para botão */
 .auth-submit.loading {
     position: relative;
     color: transparent;
