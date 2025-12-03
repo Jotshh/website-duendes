@@ -1,0 +1,363 @@
+:root {
+    --primary-color: #e91e63;
+    --secondary-color: #1a233a;
+    --accent-color: #3a2d48;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --bg-light: #f4f4f4;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-header {
+    background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+    color: var(--text-light);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo span {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+    transition: color 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.main-nav a.active,
+.main-nav a:hover {
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.events-section {
+    margin: 40px 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+.carrossel-container {
+    position: relative;
+    padding: 0 50px;
+}
+
+.carrossel {
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
+}
+
+.carrossel::-webkit-scrollbar {
+    display: none; 
+}
+
+.event-card {
+    flex: 0 0 300px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.event-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.event-content {
+    padding: 20px;
+}
+
+.event-title {
+    font-size: 1.1rem;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+    color: var(--secondary-color);
+}
+
+.event-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.event-title a:hover {
+    color: var(--primary-color);
+}
+
+.event-info {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-category {
+    display: inline-block;
+    background: var(--gradient);
+    color: var(--text-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.btn-ver-todos{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #f8f9fa;
+    color: #e91e63;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #e91e63;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-ver-todos:hover {
+    background: #e9ecef;
+    border-color: #e91e63;
+    transform: translateY(-1px);
+}
+
+.carrossel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--card-bg);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.carrossel-btn:hover {
+    background: var(--primary-color);
+    color: var(--text-light);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carrossel-btn.prev {
+    left: 0;
+}
+
+.carrossel-btn.next {
+    right: 0;
+}
+
+.loading-state, .error-state, .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    grid-column: 1 / -1;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.site-footer {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    padding: 40px 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-logo img {
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.footer-contact h4,
+.footer-social h4 {
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--primary-color);
+}
+
+.empty-state, .error-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    width: 100%;
+}
+
+.error-state button {
+    margin-top: 15px;
+}
+
+.event-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    }
+
+@media (max-width: 768px) {
+    .site-header .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .main-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .carrossel-container {
+        padding: 0 30px;
+    }
+    
+    .event-card {
+        flex: 0 0 280px;
+    }  
+    
+    .carrossel-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}

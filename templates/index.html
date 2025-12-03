@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/layouts/index.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Duendes Site Logo">
+                <span>Duendes Site</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/" class="active">Home</a></li>
+                    {% if session.user_type == 'organizador' %}
+                        <li><a href="/dashboard-organizador">Dashboard</a></li>
+                        <li><a href="/meus-eventos">Meus Eventos</a></li>
+                        <li><a href="/criar-evento">Criar Evento</a></li>
+                    {% else %}
+                        <li><a href="/entrar">Entrar</a></li>
+                        <li><a href="/cadastro">Cadastrar</a></li>
+                    {% endif %}
+                    <li><a href="/eventos">Eventos</a></li>
+                    {% if g.user %}
+                        <li><a href="/perfil">Meu perfil</a></li>
+                        <li><a href="/sair">Sair</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+
+            <section class="hero-section" style="text-align: center;">
+                <h1 style="font-size: 3rem; margin-bottom: 20px; color: var(--secondary-color);">
+                    Descubra Eventos Incríveis
+                </h1>
+                <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto 30px;">
+                    Encontre os melhores eventos da sua cidade. Festas, shows, workshops e muito mais!
+                </p>
+                <a href="/eventos" class="btn-ver-todos" style="display: inline-block; margin: 10px;">
+                    Explorar Todos os Eventos
+                </a>
+            </section>
+
+            <section class="events-section">
+                <div class="section-header">
+                    <h2 class="section-title">Eventos em Destaque</h2>
+                    <a href="/eventos" class="btn-ver-todos">
+                        Ver Todos →
+                    </a>
+                </div>
+
+                <div id="carrossel-eventos" class="carrossel-container">
+                    <button class="carrossel-btn prev">‹</button>
+                    <div class="carrossel" id="eventos-carrossel">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Carregando eventos...</p>
+                        </div>
+                    </div>                   
+                    <button class="carrossel-btn next">›</button>
+                </div>
+            </section>
+
+            <section class="events-section">
+                <div class="section-header">
+                    <h2 class="section-title">Explore por Categoria</h2>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <a href="/eventos?categoria=festas" class="event-category" style="display: block; text-align: center; padding: 20px; text-decoration: none;">
+                        🎉 FESTAS
+                    </a>
+                    <a href="/eventos?categoria=shows" class="event-category" style="display: block; text-align: center; padding: 20px; text-decoration: none;">
+                        🎵 SHOWS
+                    </a>
+                    <a href="/eventos?categoria=tecnologia" class="event-category" style="display: block; text-align: center; padding: 20px; text-decoration: none;">
+                        💻 TECNOLOGIA
+                    </a>
+                    <a href="/eventos?categoria=esportes" class="event-category" style="display: block; text-align: center; padding: 20px; text-decoration: none;">
+                        ⚽ ESPORTES
+                    </a>
+                    <a href="/eventos?categoria=esportes" class="event-category" style="display: block; text-align: center; padding: 20px; text-decoration: none;">
+                         OUTROS
+                    </a>
+                    
+                </div>
+            </section>
+
+            
+          
+        </div>
+    </main>
+
+    {% include 'componentes/footer.html' %}
+
+    <script src="/static/js/carrossel.js"></script>
+    <script src="/static/js/eventos.js"></script>
+</body>
+</html>
