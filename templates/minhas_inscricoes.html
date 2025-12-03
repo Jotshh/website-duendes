@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Inscrições - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+    
+</head>
+<body>
+    {% include 'componentes/header.html' %}
+
+    <main class="container">
+        <section class="card">
+            <div class="back-button-container">
+                <button class="btn-voltar" type="button" onclick="history.back()">
+                ⬅ Voltar
+            </button>   
+            </div>
+            <h2>Minhas Inscrições</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if inscricoes %}
+                <div class="inscricoes-grid">
+                    {% for inscricao in inscricoes %}
+                        <div class="inscricao-card">
+                            <div class="inscricao-info">
+                                <h3>{{ inscricao.evento.titulo }}</h3>
+                                <p><strong>Data:</strong> {{ inscricao.evento.data.strftime('%d/%m/%Y') }}</p>
+                                <p><strong>Local:</strong> {{ inscricao.evento.local }}</p>
+                                <p><strong>Inscrito em:</strong> {{ inscricao.data_inscricao.strftime('%d/%m/%Y às %H:%M') }}</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="status-{{ inscricao.status }}">
+                                        {{ inscricao.status }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div>
+                                <a href="/evento/{{ inscricao.evento.ID }}" class="btn-ver-evento">
+                                    Ver Evento
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Nenhuma inscrição encontrada</h3>
+                    <p>Você ainda não se inscreveu em nenhum evento.</p><br>
+                    <a href="/eventos" class="btn-criar" style="margin-top: 1rem;">
+                        Explorar Eventos
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+{% include 'componentes/footer.html' %}
+</body>
+</html>

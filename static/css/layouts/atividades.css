@@ -1,0 +1,64 @@
+.atividades-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px 0;
+  margin-bottom: 30px;
+}
+
+.atividade-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #007bff;
+}
+
+.atividade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.atividade-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9em;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-success {
+  background: #31a400;
+  color: white;
+}
+
+.btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.horario-info {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}

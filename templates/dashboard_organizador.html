@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .evento-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .evento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .evento-imagem {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .evento-content {
+            padding: 15px;
+        }
+        
+        .evento-titulo {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .evento-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .evento-categoria {
+            display: inline-block;
+            background: #f8f9fa;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-top: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .empty-state img {
+            max-width: 200px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .action-card:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            border-color: #007bff;
+        }
+        
+        .action-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
+            </div>
+            <nav class="main-nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        {% if session.user_type == 'organizador' %}
+            <li><a href="/dashboard-organizador">Dashboard</a></li>
+            <li><a href="/meus-eventos">Meus Eventos</a></li>
+            <li><a href="/criar-evento">Criar Evento</a></li>
+        {% else %}
+            <li><a href="/entrar">Entrar</a></li>
+            <li><a href="/cadastro">Cadastrar</a></li>
+        {% endif %}
+        <li><a href="/eventos">Eventos</a></li>
+        {% if g.user %}
+            <li><a href="/perfil">Meu perfil</a></li>
+            <li><a href="/sair">Sair</a></li>
+        {% endif %}
+    </ul>
+</nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-header">
+            <h1>Dashboard do Organizador</h1>
+            <span>Bem-vindo, {{ g.user.nome if g.user else 'Organizador' }}!</span>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Estatísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total de Eventos</div>
+                <div class="stat-number">{{ total_eventos }}</div>
+                <div class="stat-label">Eventos criados</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">Eventos Futuros</div>
+                <div class="stat-number">{{ eventos_futuros }}</div>
+                <div class="stat-label">Próximos eventos</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-label">Taxa de Crescimento</div>
+                <div class="stat-number">+12%</div>
+                <div class="stat-label">Este mês</div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="section">
+            <h2 style="margin-bottom: 20px;">Ações Rápidas</h2>
+            <div class="quick-actions">
+                <a href="/criar-evento" class="action-card">
+                    <div class="action-icon">🎉</div>
+                    <div class="action-title">Criar Evento</div>
+                    <div class="action-desc">Cadastre um novo evento</div>
+                </a>
+                
+                <a href="/meus-eventos" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <div class="action-title">Meus Eventos</div>
+                    <div class="action-desc">Gerencie seus eventos</div>
+                </a>
+                
+                <a href="/eventos" class="action-card">
+                    <div class="action-icon">👀</div>
+                    <div class="action-title">Ver Todos</div>
+                    <div class="action-desc">Explore eventos públicos</div>
+                </a>
+                
+                <a href="/perfil" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <div class="action-title">Meu Perfil</div>
+                    <div class="action-desc">Editar informações</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Próximos Eventos -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Próximos Eventos</h2>
+                <a href="/meus-eventos" class="btn-primary">Ver Todos</a>
+            </div>
+
+            {% if proximos_eventos %}
+                <div class="eventos-grid">
+                    {% for evento in proximos_eventos %}
+                        <div class="evento-card">
+                            {% if evento.imagem_url %}
+                                <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}" class="evento-imagem">
+                            {% else %}
+                                <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem" class="evento-imagem">
+                            {% endif %}
+                            
+                            <div class="evento-content">
+                                <div class="evento-titulo">{{ evento.titulo }}</div>
+                                <div class="evento-info">
+                                    <strong>📅</strong> {{ evento.data.strftime('%d/%m/%Y') }}
+                                </div>
+                                <div class="evento-info">
+                                    <strong>🕒</strong> {{ evento.horario.strftime('%H:%M') }}
+                                </div>
+                                <div class="evento-info">
+                                    <strong>📍</strong> {{ evento.local }}
+                                </div>
+                                <div class="evento-categoria">{{ evento.categoria|title }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div style="font-size: 4em; margin-bottom: 20px;">📅</div>
+                    <h3>Nenhum evento futuro</h3>
+                    <p>Você ainda não tem eventos programados para o futuro.</p>
+                    <br>
+                    <a href="/criar-evento" class="btn-primary" style="margin-top: 15px;">Criar Primeiro Evento</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>Estatísticas de Participação</h2>
+                <span style="color: #666;">Em breve</span>
+            </div>
+            <div style="text-align: center; padding: 40px; color: #999; background: #f8f9fa; border-radius: 8px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">📊</div>
+                <h3>Estatísticas em Desenvolvimento</h3>
+                <p>Em breve você poderá acompanhar métricas detalhadas sobre a participação em seus eventos.</p>
+            </div>
+        </div>
+    </main>
+        {% include 'componentes/footer.html' %}
+</body>
+</html>

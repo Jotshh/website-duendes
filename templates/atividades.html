@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades - {{ evento.titulo }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+    
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    {% if session.user_type == 'organizador' %}
+                        <li><a href="/dashboard-organizador">Dashboard</a></li>
+                        <li><a href="/meus-eventos">Meus Eventos</a></li>
+                        <li><a href="/criar-evento">Criar Evento</a></li>
+                    {% else %}
+                        <li><a href="/entrar">Entrar</a></li>
+                        <li><a href="/cadastro">Cadastrar</a></li>
+                    {% endif %}
+                    <li><a href="/eventos">Eventos</a></li>
+                    {% if g.user %}
+                        <li><a href="/perfil">Meu perfil</a></li>
+                        <li><a href="/sair">Sair</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="atividades-header">
+        <div class="container">
+            <h1>{{ evento.titulo }}</h1>
+            <p>Programação de Atividades</p>
+        </div>
+    </div>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Atividades Programadas</h2>
+            {% if session.user_type == 'organizador' and evento.Organizador_ID == session.user_id %}
+                <a href="/evento/{{ evento.ID }}/adicionar-atividade" class="btn-small btn-success">
+                    + Nova Atividade
+                </a>
+            {% endif %}
+        </div>
+
+        {% if atividades %}
+            {% for atividade in atividades %}
+                <div class="atividade-card">
+                    <div class="atividade-header">
+                        <div>
+                            <h3 style="margin: 0 0 10px 0;">{{ atividade.titulo }}</h3>
+                            <p style="margin: 0; color: #666;">
+                                <strong>Convidado:</strong> {{ atividade.convidado }}
+                            </p>
+                        </div>
+                        {% if session.user_type == 'organizador' and evento.Organizador_ID == session.user_id %}
+                            <div class="atividade-actions">
+                                <a href="/editar-atividade/{{ atividade.ID }}" class="btn-small btn-edit">
+                                    Editar
+                                </a>
+                                <form method="POST" action="/excluir-atividade/{{ atividade.ID }}" style="display: inline;">
+                                    <button type="submit" class="btn-small btn-delete" 
+                                            onclick="return confirm('Tem certeza que deseja excluir esta atividade?')">
+                                        Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="horario-info">
+                        <strong>📅 Data:</strong> {{ atividade.data.strftime('%d/%m/%Y') }}<br>
+                        <strong>🕒 Horário:</strong> {{ atividade.horario_inicio.strftime('%H:%M') }} - {{ atividade.horario_fim.strftime('%H:%M') }}
+                    </div>
+                    
+                    <p>{{ atividade.descricao }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div style="font-size: 4em; margin-bottom: 20px;">📋</div>
+                <h3>Nenhuma atividade programada</h3>
+                <p>Este evento ainda não possui atividades cadastradas.</p>
+                <br>
+                {% if session.user_type == 'organizador' and evento.Organizador_ID == session.user_id %}
+                    <a href="/evento/{{ evento.ID }}/adicionar-atividade" class="btn-small btn-success" style="margin-top: 15px;">
+                        Adicionar Primeira Atividade
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="/evento/{{ evento.ID }}" class="btn-voltar">
+                ⬅ Voltar para o Evento
+            </a>
+        </div>
+    </main>
+        {% include 'componentes/footer.html' %}
+</body>
+</html>

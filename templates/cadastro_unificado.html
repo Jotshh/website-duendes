@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/layouts/cadastro_unificado.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+</head>
+<body class="cadastro-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="/static/logo.png" alt="Duendes Site">
+                    <span>Duendes Site</span>
+                </div>
+                <h1 class="auth-title">Criar Conta</h1>
+                <p class="auth-subtitle">Junte-se à nossa comunidade de eventos</p>
+            </div>
+
+            <div class="auth-body">
+                <div class="back-button-container">
+                    <a href="{{ url_for('inicio') }}" class="btn-voltar">
+                        <span>←</span> Voltar ao Início
+                    </a>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="auth-alert {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="auth-form" id="cadastroForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group">
+                        <label>Tipo de Cadastro *</label>
+                        <div class="tipo-cadastro-toggle" id="tipoToggle">
+                            <div class="tipo-option active" data-type="usuario">
+                                👤 Usuário
+                            </div>
+                            <div class="tipo-option" data-type="organizador">
+                                🎪 Organizador
+                            </div>
+                        </div>
+                        {{ form.tipo(id="tipoInput", style="display: none;") }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        {{ form.nome(class="form-control", placeholder="Digite seu nome completo") }}
+                        {% if form.nome.errors %}
+                            <div class="form-errors">
+                                {% for error in form.nome.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        {{ form.email(class="form-control", placeholder="seu@email.com") }}
+                        {% if form.email.errors %}
+                            <div class="form-errors">
+                                {% for error in form.email.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div id="camposUsuario" class="campos-especificos">
+                        <div class="form-group">
+                            <label for="usuario">Nome de Usuário *</label>
+                            {{ form.usuario(class="form-control", placeholder="Escolha um nome de usuário") }}
+                            {% if form.usuario.errors %}
+                                <div class="form-errors">
+                                    {% for error in form.usuario.errors %}
+                                        <small class="error-text">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cpf">CPF *</label>
+                            {{ form.cpf(class="form-control cpf-mask", placeholder="000.000.000-00") }}
+                            {% if form.cpf.errors %}
+                                <div class="form-errors">
+                                    {% for error in form.cpf.errors %}
+                                        <small class="error-text">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div id="camposOrganizador" class="campos-especificos" style="display: none;">
+                        <div class="form-group">
+                            <label for="cpf_cnpj">CPF/CNPJ *</label>
+                            {{ form.cpf_cnpj(class="form-control cpf-cnpj-mask", placeholder="000.000.000-00 ou 00.000.000/0001-00") }}
+                            {% if form.cpf_cnpj.errors %}
+                                <div class="form-errors">
+                                    {% for error in form.cpf_cnpj.errors %}
+                                        <small class="error-text">{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone *</label>
+                        {{ form.telefone(class="form-control telefone-mask", placeholder="(00) 00000-0000") }}
+                        {% if form.telefone.errors %}
+                            <div class="form-errors">
+                                {% for error in form.telefone.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha">Senha *</label>
+                        {{ form.senha(class="form-control", placeholder="Digite sua senha (mínimo 6 caracteres)") }}
+                        <div class="password-strength">
+                            <div class="strength-bar"></div>
+                            <small class="strength-text"></small>
+                        </div>
+                        {% if form.senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirma_senha">Confirmar Senha *</label>
+                        {{ form.confirma_senha(class="form-control", placeholder="Digite a senha novamente") }}
+                        {% if form.confirma_senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.confirma_senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" id="termos" required>
+                        <label for="termos">
+                            Concordo com os <a href="#">Termos de Uso</a> e <a href="#">Política de Privacidade</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="auth-submit" id="submitBtn">
+                        Criar Minha Conta
+                    </button>
+
+                    <div class="auth-links">
+                        Já tem uma conta? <a href="{{ url_for('entrar') }}">Faça login aqui</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/cadastro_unificado.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function() { 
+            $('.cpf-mask').mask('000.000.000-00');
+            $('.cpf-cnpj-mask').mask('000.000.000-00').change(function() {
+                var value = $(this).val().replace(/\D/g, '');
+                if (value.length > 11) {
+                    $(this).mask('00.000.000/0000-00');
+                } else {
+                    $(this).mask('000.000.000-00');
+                }
+            });
+            $('.telefone-mask').mask('(00) 00000-0000');
+        });
+    </script>
+</body>
+</html>

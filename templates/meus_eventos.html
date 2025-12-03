@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Eventos - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+    
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
+            </div>
+            <nav class="main-nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        {% if session.user_type == 'organizador' %}
+            <li><a href="/dashboard-organizador">Dashboard</a></li>
+            <li><a href="/meus-eventos">Meus Eventos</a></li>
+            <li><a href="/criar-evento">Criar Evento</a></li>
+        {% else %}
+            <li><a href="/entrar">Entrar</a></li>
+            <li><a href="/cadastro">Cadastrar</a></li>
+        {% endif %}
+        <li><a href="/eventos">Eventos</a></li>
+        {% if g.user %}
+            <li><a href="/perfil">Meu perfil</a></li>
+            <li><a href="/sair">Sair</a></li>
+        {% endif %}
+    </ul>
+</nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0">Meus Eventos</h2>
+                <a href="/criar-evento" class="btn-criar">+ Novo Evento</a>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if eventos %}
+                <div class="eventos-grid">
+                    {% for evento in eventos %}
+                        <div class="evento-card">
+                            {% if evento.imagem_url %}
+                                <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}" class="evento-imagem">
+                            {% else %}
+                                <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem" class="evento-imagem">
+                            {% endif %}
+                            
+                            <div class="evento-content">
+                                <h3>{{ evento.titulo }}</h3>
+                                <p><strong>Data:</strong> {{ evento.data.strftime('%d/%m/%Y') }}</p>
+                                <p><strong>Horário:</strong> {{ evento.horario.strftime('%H:%M') }}</p>
+                                <p><strong>Local:</strong> {{ evento.local }}</p>
+                                <p><strong>Categoria:</strong> {{ evento.categoria }}</p>
+                                
+                                <div class="evento-actions">
+                                    <a href="/editar-evento/{{ evento.ID }}" class="btn-editar">Editar</a>
+                                    <form method="POST" action="/excluir-evento/{{ evento.ID }}" style="display: inline;">
+                                        <button type="submit" class="btn-excluir" onclick="return confirm('Tem certeza que deseja excluir este evento?')">Excluir</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>Nenhum evento criado</h3>
+                    <p>Você ainda não criou nenhum evento. Comece criando seu primeiro evento!</p>
+                    <br>
+                    <a href="/criar-evento" class="btn-criar" style="margin-top: 15px;">Criar Primeiro Evento</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+    {% include 'componentes/footer.html' %}
+</body>
+</html>

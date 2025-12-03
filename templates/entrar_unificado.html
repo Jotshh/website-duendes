@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/layouts/cadastro_unificado.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+</head>
+<body class="cadastro-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <img src="/static/logo.png" alt="Duendes Site">
+                    <span>Duendes Site</span>
+                </div>
+                <h1 class="auth-title">Bem-vindo de volta!</h1>
+                <p class="auth-subtitle">Acesse sua conta para continuar</p>
+            </div>
+
+            <div class="auth-body">
+                <div class="back-button-container">
+                    <a href="{{ url_for('inicio') }}" class="btn-voltar">
+                        <span>←</span> Voltar ao Início
+                    </a>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="auth-alert {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" class="auth-form">
+                    {{ form.hidden_tag() }}
+
+                    <div class="form-group">
+                        <label>Tipo de Login </label>
+                        <div class="tipo-cadastro-toggle" id="loginTypeToggle">
+                            <div class="tipo-option active" data-type="usuario">
+                                👤 Usuário
+                            </div>
+                            <div class="tipo-option" data-type="organizador">
+                                🎪 Organizador
+                            </div>
+                        </div>
+                        {{ form.tipo(id="tipoInput", style="display: none;") }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="usuario" id="usuarioLabel">Usuário ou E-mail</label>
+                        {{ form.usuario(class="form-control", placeholder="Digite seu usuário ou e-mail") }}
+                        {% if form.usuario.errors %}
+                            <div class="form-errors">
+                                {% for error in form.usuario.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        {{ form.senha(class="form-control", placeholder="Digite sua senha") }}
+                        {% if form.senha.errors %}
+                            <div class="form-errors">
+                                {% for error in form.senha.errors %}
+                                    <small class="error-text">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="forgot-password">
+                            <a href="#">Esqueceu a senha?</a>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="auth-submit">
+                        Entrar na Conta
+                    </button>
+
+                    <div class="auth-links">
+                        Não tem uma conta? <a href="{{ url_for('cadastro') }}">Cadastre-se aqui</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipoToggle = document.getElementById('loginTypeToggle');
+            const tipoInput = document.getElementById('tipoInput');
+            const usuarioLabel = document.getElementById('usuarioLabel');
+            const usuarioInput = document.getElementById('usuario');
+            
+            // Definir tipo padrão
+            if (!tipoInput.value) {
+                tipoInput.value = 'usuario';
+            }
+            
+            tipoToggle.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tipo-option')) {
+                    document.querySelectorAll('.tipo-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    e.target.classList.add('active');
+                    
+                    const tipo = e.target.getAttribute('data-type');
+                    tipoInput.value = tipo;
+
+                    if (tipo === 'organizador') {
+                        usuarioLabel.textContent = 'E-mail';
+                        usuarioInput.placeholder = 'Digite seu e-mail de organizador';
+                    } else {
+                        usuarioLabel.textContent = 'Usuário ou E-mail';
+                        usuarioInput.placeholder = 'Digite seu usuário ou e-mail';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+</head>
+<body class="eventos-page">
+    {% include 'componentes/header.html' %}
+
+    <main class="main-content">
+        <div class="container">
+            <section class="eventos-section">
+                <div class="section-header">
+                    <h1 style="margin-bottom: 10px;">Explore Eventos</h1>
+                    </div>
+
+                <div class="filtros">
+                    <form method="GET" action="/eventos" class="filtros-form">
+                        <div class="form-group">
+                            <label for="search">Buscar Eventos</label>
+                            <input type="text" id="search" name="search" class="form-control" 
+                                   placeholder="Digite o nome do evento..." value="{{ request.args.get('search', '') }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria" name="categoria" class="form-control">
+                                <option value="todos">Todas as categorias</option>
+                                {% for value, label in categorias %}
+                                    <option value="{{ value }}" 
+                                        {% if categoria_selecionada == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if eventos %}
+                    <div class="results-info">
+                        <strong>{{ eventos|length }}</strong> evento(s) encontrado(s)
+                        {% if request.args.get('search') %}
+                            para "{{ request.args.get('search') }}"
+                        {% endif %}
+                        {% if categoria_selecionada and categoria_selecionada != 'todos' %}
+                            na categoria {{ categorias|selectattr('0', 'equalto', categoria_selecionada)|map(attribute='1')|first }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if eventos %}
+                    <div class="eventos-grid">
+                        {% for evento in eventos %}
+                            <div class="event-card">
+                                {% if evento.imagem_url %}
+                                    <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}" class="event-image">
+                                {% else %}
+                                    <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem" class="event-image">
+                                {% endif %}
+                                
+                                <div class="event-content">
+                                    <h3 class="event-title">
+                                        <a href="/evento/{{ evento.ID }}">{{ evento.titulo }}</a>
+                                    </h3>
+                                    <div class="event-info">
+                                        <span>📅 {{ evento.data.strftime('%d/%m/%Y') }}</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <span>🕒 {{ evento.horario.strftime('%H:%M') }}</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <span>📍 {{ evento.local }}</span>
+                                    </div>
+                                    
+                                    {% if evento.organizador %}
+                                        <p class="organizador-info">
+                                            Organizado por: {{ evento.organizador.nome }}
+                                        </p>
+                                    {% endif %}
+                                    
+                                    <span class="event-category">{{ evento.categoria|title }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div style="font-size: 4em; margin-bottom: 20px;">🔍</div>
+                        <h3>Nenhum evento encontrado</h3>
+                        <p>
+                            {% if request.args.get('search') or (categoria_selecionada and categoria_selecionada != 'todos') %}
+                                Tente ajustar os filtros de busca ou 
+                                <a href="/eventos">ver todos os eventos</a>.
+                            {% else %}
+                                Não há eventos disponíveis no momento. 
+                                {% if session.user_type == 'organizador' %}
+                                    <a href="/criar-evento">Que tal criar o primeiro?</a>
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+
+    {% include 'componentes/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ evento.titulo }} - Duendes Site</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="../static/assets/img/favicon.ico"/>
+
+</head>
+<body>
+    {% include 'componentes/header.html' %}
+
+    <div class="evento-header">
+        <div class="container">
+            <h1>{{ evento.titulo }}</h1>
+            <p>Organizado por: {{ evento.organizador.nome if evento.organizador else 'Organizador' }}</p>
+        </div>
+    </div>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="evento-info">
+            {% if evento.imagem_url %}
+                <img src="{{ evento.imagem_url }}" alt="{{ evento.titulo }}" class="evento-imagem">
+            {% else %}
+                <img src="/static/assets/img/default-event.jpg" alt="Evento sem imagem" class="evento-imagem">
+            {% endif %}
+            
+            <div class="info-item">
+                <div class="info-icon">📅</div>
+                <div>
+                    <strong>Data:</strong> {{ evento.data.strftime('%d/%m/%Y') }}
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">🕒</div>
+                <div>
+                    <strong>Horário:</strong> {{ evento.horario.strftime('%H:%M') }}
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">📍</div>
+                <div>
+                    <strong>Local:</strong> {{ evento.local }}
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">📝</div>
+                <div>
+                    <strong>Descrição:</strong><br>
+                    {{ evento.descricao }}
+                </div>
+            </div>
+            
+            <div class="categoria-badge">
+                {{ evento.categoria|title }}
+            </div>
+        </div>
+        <div style="margin-top: 20px; margin-bottom: 1rem; text-align: center;">
+            <a href="/evento/{{ evento.ID }}/atividades" class="btn-atividades" style="display: inline-block;">
+                📋 Ver Programação de Atividades
+            </a>
+        </div>
+
+        {% if g.user %}
+            {% if session.user_type == 'usuario' %}
+                <div style="text-align: center; margin-top: 30px;">
+                    {% if ja_inscrito %}
+                        <form method="POST" action="/cancelar-inscricao/{{ evento.ID }}" style="display: inline;">
+                            <button type="submit" class="btn-cancelar" 
+                                    onclick="return confirm('Tem certeza que deseja cancelar sua inscrição?')">
+                                Cancelar Inscrição
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="POST" action="/inscrever/{{ evento.ID }}" style="display: inline;">
+                            <button type="submit" class="btn-inscrever">
+                                Inscrever-se no Evento
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div style="text-align: center; margin-top: 30px;">
+                <p>Para se inscrever neste evento, <a href="/entrar">faça login</a> ou <a href="/cadastro">cadastre-se</a>.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    {% include 'componentes/footer.html' %}
+
+</body>
+</html>

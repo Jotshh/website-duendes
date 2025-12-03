@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Atividade - {{ evento.titulo }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico"/>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Events Logo">
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    {% if session.user_type == 'organizador' %}
+                        <li><a href="/dashboard-organizador">Dashboard</a></li>
+                        <li><a href="/meus-eventos">Meus Eventos</a></li>
+                        <li><a href="/criar-evento">Criar Evento</a></li>
+                    {% else %}
+                        <li><a href="/entrar">Entrar</a></li>
+                        <li><a href="/cadastro">Cadastrar</a></li>
+                    {% endif %}
+                    <li><a href="/eventos">Eventos</a></li>
+                    {% if g.user %}
+                        <li><a href="/perfil">Meu perfil</a></li>
+                        <li><a href="/sair">Sair</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <button class="btn-voltar" type="button" onclick="history.back()">
+                ⬅ Voltar
+            </button>
+
+            <h2 style="margin: 0 0 20px 0">Adicionar Atividade</h2>
+            <p style="color: #666; margin-bottom: 20px;">Evento: {{ evento.titulo }}</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div>
+                    <label for="titulo">Título da Atividade</label>
+                    {{ form.titulo(class="form-control", placeholder="Digite o título da atividade") }}
+                </div>
+
+                <div>
+                    <label for="descricao">Descrição</label>
+                    {{ form.descricao(class="form-control", rows="4", placeholder="Descreva a atividade") }}
+                </div>
+
+                <div>
+                    <label for="convidado">Convidado/Palestrante</label>
+                    {{ form.convidado(class="form-control", placeholder="Nome do convidado ou palestrante") }}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label for="data">Data</label>
+                        {{ form.data(class="form-control", type="date") }}
+                    </div>
+                    <div>
+                        <label for="horario_inicio">Início</label>
+                        {{ form.horario_inicio(class="form-control", type="time") }}
+                    </div>
+                    <div>
+                        <label for="horario_fim">Término</label>
+                        {{ form.horario_fim(class="form-control", type="time") }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn-criar">Adicionar Atividade</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
