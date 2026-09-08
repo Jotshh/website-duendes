@@ -1,4 +1,4 @@
-# 🎪 Duendes Site - Plataforma de Centralização de Eventos
+# Duendes Site - Plataforma de Centralização de Eventos
 
 ![preview](./static/preview.png)
 
@@ -9,7 +9,7 @@
 
 Uma plataforma completa para criação, gestão e participação em eventos, desenvolvida com Flask e MySQL.
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 ### 👤 Para Usuários
 - ✅ Cadastro e login 
@@ -25,14 +25,14 @@ Uma plataforma completa para criação, gestão e participação em eventos, des
 - ✅ Estatísticas básicas
 - ✅ Upload de imagens para eventos
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 - **Backend:** Python 3.8+, Flask, SQLAlchemy, WTForms
 - **Banco de Dados:** MySQL 8.0+
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
 - **Ferramentas:** Git, ambiente virtual Python
 
-## 🚀 Instalação Rápida
+## Instalação Rápida
 
 ### Pré-requisitos
 
